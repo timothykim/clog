@@ -1,1 +1,12 @@
 This is a simple blogging engine for my personal page in C. Yes, C.
+
+TODO:
+
+1. Test Unicode
+2. Block SQL injection
+3. Add reddit style html formatting
+4. ... many more...
+
+
+
+
