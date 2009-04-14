@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS entries
+   (id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    content TEXT,
+    c_time INTEGER,
+    u_time INTEGER DEFAULT NULL,
+	deleted INTEGER DEFAULT 0);
+
+CREATE TABLE IF NOT EXISTS tags
+   (id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name TEXT,
+	count INTEGER);
+
+CREATE TABLE IF NOT EXISTS entry_tag
+   (entry_id INTEGER REFERENCES entries (id),
+	tag_id INTEGER REFERENCES tags (id));
+
+
+  
