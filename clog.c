@@ -78,11 +78,13 @@ int print_entries(int window, int id, const char *template) {
     int column, c;
     int row, r;
 
-    q = (char *)malloc(sizeof(char) * 70);
+    q = (char *)malloc(sizeof(char) * 200);
     sprintf(q, "SELECT "
-               "id, title, content, datetime(c_time, 'unixepoch'), datetime(u_time, 'unixepoch') "
+               "id, title, content, "
+               "datetime(c_time, 'unixepoch') AS c_time, datetime(u_time, 'unixepoch') AS u_time "
                "FROM entries "
                "WHERE id >= %d AND deleted = 0 "
+               "ORDER BY c_time DESC "
                "LIMIT %d ",
                id, window);
 
@@ -101,8 +103,11 @@ int print_entries(int window, int id, const char *template) {
 
 
     for (row = 1; row <= r; row++) {
-        printf("%s\t%s\t%s\n", results[CLOG_ID], results[CLOG_TITLE], results[CLOG_CONTENT]);
-
+        /* id, title, c_time, content, u_time */
+        printf(template, results[CLOG_ID],
+                results[CLOG_TITLE],
+                results[CLOG_C_TIME],
+                results[CLOG_CONTENT]);
     }
 
     sqlite3_free_table(results);

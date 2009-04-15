@@ -3,11 +3,10 @@
 
 int main() {
     print_entries(2, 1, 
-            "<div class=\"entry\" id=\"entry{id}\">"
-            "<div class=\"title\">{title}</div>"
-            "<div class=\"datetime\">{c_time}</div>"
-            "<div class=\"content\">{content}</div>"
-            "<div class=\"update\">{u_time}</div>"
+            "<div class=\"entry\" id=\"entry%s\">"
+            "<div class=\"title\">%s</div>"
+            "<div class=\"datetime\">%s</div>"
+            "<div class=\"content\">%s</div>"
             "</div>"
         );
 
