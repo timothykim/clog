@@ -3,33 +3,35 @@
 #include "fcgi_stdio.h"
 #include "clog.h"
 
+void file_to_stdout(const char *file);
+
 int main() {
     while (FCGI_Accept() >= 0) {
-		printf("Content-type: text/html\r\n"
-				"\r\n"
-                
-                "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> "
-                "<html xmlns=\"http://www.w3.org/1999/xhtml\">" 
-                "<head>"
-                "    <meta name=\"Author\" content=\"Timothy Kim\" />"
-                "    <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />"
-                "    <style type=\"text/css\">"
-                "        @import url('clog.css');"
-                "    </style>"
-                "    <title>timothylive.net</title>"
-                "</head>"
-                "<body>"
-                "    <div id=\"body_wrapper\">"
-                );
+        printf("Content-type: text/html\r\n"
+                "\r\n");
+
+        file_to_stdout("head.html");
+        
         print_entries(2, 1, 
-            "<div class=\"entry\" id=\"entry%s\">"
-            "<div class=\"title\">%s</div>"
-            "<div class=\"datetime\">%s</div>"
-            "<div class=\"content\">%s</div>"
-            "</div>"
+            "<div class=\"entry\" id=\"entry%s\">\n"
+            "<h2 class=\"title\">%s</h2>\n"
+            "<div class=\"datetime\">\n%s\n</div>\n"
+            "<div class=\"content\">%s</div>\n"
+            "</div>\n"
         );
-        printf("</div></body></html>");
+
+        file_to_stdout("foot.html");
     }
 
-	return 0;
+    return 0;
+}
+
+void file_to_stdout(const char *file) {
+    FILE *fp;
+    char c;
+    fp = fopen(file,"r");
+    while((c = fgetc(fp)) != EOF) {
+        printf("%c", c);
+    }
+    fclose(fp);
 }
