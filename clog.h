@@ -16,8 +16,8 @@
 #define CLOG_TYPE_RSS_2_0 1
 #define CLOG_TYPE_HTML 2
 
-#define CLOG_LOOP_BEGIN "{loop_begin}\n"
-#define CLOG_LOOP_END "{loop_end}\n"
+#define CLOG_LOOP_BEGIN "{=loop_begin=}\n"
+#define CLOG_LOOP_END "{=loop_end=}\n"
 
 #define CLOG_BEFORE_LOOP 0
 #define CLOG_INSIDE_LOOP 1

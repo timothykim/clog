@@ -1,0 +1,18 @@
+{
+    "siteName": "timothylive.net"
+    "siteURL": "http://timothylive.net"
+    "author": "Timothy Kim"
+    "email": "timothykim@timothylive.net"
+    "entries": [
+{=loop_begin=}
+        {
+            "id": {=id=},
+            "created": "{=c_time=}"
+            "lastUpdated": "{=u_time=}"
+            "title": "{=title=}"
+            "content": "{=content=}"
+        },
+{=loop_end=}
+        null
+    ]
+}

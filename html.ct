@@ -28,16 +28,16 @@ DTD/xhtml1-transitional.dtd">
         </div>
         <div id="body">
 
-{loop_begin}
-            <div class="entry" id="entry_{id}">
-                <h2 class="title">{title}</h2>
-                <div class="c_time">{c_time}</div>
+{=loop_begin=}
+            <div class="entry" id="entry_{=id=}">
+                <h2 class="title">{=title=}</h2>
+                <div class="c_time">{=c_time=}</div>
                 <div class="content">
-                    {content}
+                    {=content=}
                 </div>
-                <div class="u_time">{u_time}</div>
+                <div class="u_time">{=u_time=}</div>
             </div>
-{loop_end}
+{=loop_end=}
 
         </div>
         <div id="footer">

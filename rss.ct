@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+  <channel>
+    <title>timothylive.net blog</title>
+    <link>http://timothylive.net/</link>
+    <description>Timothy Kim's Blog</description>
+    <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+    <generator>clog</generator>
+{=loop_begin=}
+    <item>
+        <title>{=title=}</title>
+        <link>http://timothylive.net/clog/{=id=}</link>
+        <description><![CDATA[{=content=}]]></description>
+        <pubDate>{=c_time=}</pubDate>
+        <guid>entry_{=id=}</guid>
+    </item>
+{=loop_end=}
+  </channel>
+</rss>
+
+

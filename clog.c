@@ -181,15 +181,16 @@ void output_entry(const char *tmplate, const entry_t e) {
     pt = tmplate;
 
     while(*pt) {
-        if ((*pt) == '{') {
-            pt++;
+        if ((*pt) == '{' && (*(pt+1)) == '=') {
+            pt = pt + 2;
             i = 0;
-            while((*pt) != '}' && i < 20) {
+            while((*pt) != '=' && (*(pt+1)) != '}' && i < 20) {
                 tag[i] = *pt;
                 pt++;
                 i++;
             }
             tag[i] = 0;
+            pt++;
 
             if (strcmp(tag, "id") == 0) printf("%d", e.id);
             if (strcmp(tag, "title") == 0 && e.title != NULL) printf("%s", e.title);
