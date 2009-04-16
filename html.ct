@@ -19,8 +19,29 @@ DTD/xhtml1-transitional.dtd">
                          |___|___|       
 -->
 <body>
+    <noscript>
+        <div id="notice">JavaScript is not working. So you can't see all the bells and whistles. Here's the plain HTML version of this site.</div>
+    </noscript>
     <div id="body_wrapper">
         <div id="header">
             <h1>timothylive.net</h1>
         </div>
         <div id="body">
+
+{loop_begin}
+            <div class="entry" id="entry_{id}">
+                <h2 class="title">{title}</h2>
+                <div class="c_time">{c_time}</div>
+                <div class="content">
+                    {content}
+                </div>
+                <div class="u_time">{u_time}</div>
+            </div>
+{loop_end}
+
+        </div>
+        <div id="footer">
+        </div>
+    </div>
+</body>
+</html>

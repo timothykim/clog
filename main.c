@@ -9,18 +9,7 @@ int main() {
     while (FCGI_Accept() >= 0) {
         printf("Content-type: text/html\r\n"
                 "\r\n");
-
-        file_to_stdout("head.html");
-        
-        print_entries(2, 1, 
-            "<div class=\"entry\" id=\"entry%s\">\n"
-            "<h2 class=\"title\">%s</h2>\n"
-            "<div class=\"datetime\">\n%s\n</div>\n"
-            "<div class=\"content\">%s</div>\n"
-            "</div>\n"
-        );
-
-        file_to_stdout("foot.html");
+        generate_entries(10, 1, "html.ct");
     }
 
     return 0;
