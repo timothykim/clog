@@ -1,5 +1,5 @@
 .SUFFIXES : .c .o 
-CFLAGS = -g
+CFLAGS = -g -O0
 CC = gcc
 OBJS = main.o clog.o 
 SRCS = $(OBJS:.o=.c)

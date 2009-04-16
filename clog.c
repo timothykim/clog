@@ -84,8 +84,11 @@ int generate_entries(int window, int id, const char *template_file) {
     char buffer[FILE_BUFFER_SIZE];
     char *loop_str;
     int ts; /* keep track of which part of the template file we are in */
+    char e_str[1];
+    e_str[0] = 0;
 
-    q = (char *)malloc(sizeof(char) * 200);
+    q = (char *)malloc(sizeof(char) * 250);
+
     sprintf(q, "SELECT "
                "id, title, content, "
                "datetime(c_time, 'unixepoch', 'localtime') AS c_time, "
@@ -97,8 +100,8 @@ int generate_entries(int window, int id, const char *template_file) {
                id, window);
 
     rc = sqlite3_open(DATABASE, &db);
-    if(rc) {
-        /* error */
+
+    if(rc) { //error
         return rc;
     }
 
@@ -113,11 +116,12 @@ int generate_entries(int window, int id, const char *template_file) {
 
     for (row = 1; row <= r; row++) {
         entries[row-1].id = atoi(results[CLOG_ID]);
-        entries[row-1].title = results[CLOG_TITLE];
+        entries[row-1].title   = results[CLOG_TITLE];
         entries[row-1].content = results[CLOG_CONTENT];
-        entries[row-1].c_time = results[CLOG_C_TIME];
-        entries[row-1].u_time = results[CLOG_U_TIME];
+        entries[row-1].c_time  = results[CLOG_C_TIME];
+        entries[row-1].u_time  = results[CLOG_U_TIME];
     }
+
 
     fc = fopen(template_file, "r");
     if (fc == NULL) {
@@ -126,7 +130,7 @@ int generate_entries(int window, int id, const char *template_file) {
     }
 
     ts = CLOG_BEFORE_LOOP;
-    loop_str = (char *)malloc(sizeof(char) * 500);
+    loop_str = (char *)malloc(sizeof(char));
     *(loop_str) = 0;
 
     while (fgets(buffer, sizeof(buffer), fc)) {
@@ -147,9 +151,12 @@ int generate_entries(int window, int id, const char *template_file) {
 
         switch (ts) {
             case CLOG_INSIDE_LOOP:
+                /*
                 if (sizeof(loop_str) < (sizeof(char) * (strlen(loop_str) + strlen(buffer) + 1))) {
                     loop_str = (char *)realloc(loop_str, sizeof(char) * 2 * (sizeof(loop_str) + strlen(buffer) + 1));
                 }
+                */
+                loop_str = (char *)realloc(loop_str, sizeof(char) * (strlen(loop_str) + strlen(buffer) + 1));
                 strcat(loop_str, buffer);
                 break;
             default:
@@ -185,10 +192,10 @@ void output_entry(const char *tmplate, const entry_t e) {
             tag[i] = 0;
 
             if (strcmp(tag, "id") == 0) printf("%d", e.id);
-            if (strcmp(tag, "title") == 0) printf("%s", e.title);
-            if (strcmp(tag, "content") == 0) printf("%s", e.content);
-            if (strcmp(tag, "c_time") == 0) printf("%s", e.c_time);
-            if (strcmp(tag, "u_time") == 0) printf("%s", e.u_time);
+            if (strcmp(tag, "title") == 0 && e.title != NULL) printf("%s", e.title);
+            if (strcmp(tag, "content") == 0 && e.content != NULL) printf("%s", e.content);
+            if (strcmp(tag, "c_time") == 0 && e.c_time != NULL) printf("%s", e.c_time);
+            if (strcmp(tag, "u_time") == 0 && e.u_time != NULL) printf("%s", e.u_time);
         } else {
             printf("%c", *pt);
         }

@@ -6,6 +6,7 @@
 void file_to_stdout(const char *file);
 
 int main() {
+
     while (FCGI_Accept() >= 0) {
         printf("Content-type: text/html\r\n"
                 "\r\n");
