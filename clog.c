@@ -91,8 +91,8 @@ int generate_entries(int window, int id, const char *template_file) {
 
     sprintf(q, "SELECT "
                "id, title, content, "
-               "datetime(c_time, 'unixepoch', 'localtime') AS c_time, "
-               "datetime(u_time, 'unixepoch', 'localtime') AS u_time "
+               "c_time, "
+               "u_time "
                "FROM entries "
                "WHERE id >= %d AND deleted = 0 "
                "ORDER BY c_time DESC "
@@ -114,12 +114,27 @@ int generate_entries(int window, int id, const char *template_file) {
 
     entry_t entries[r];
 
+    char index;
     for (row = 1; row <= r; row++) {
-        entries[row-1].id = atoi(results[CLOG_ID]);
-        entries[row-1].title   = results[CLOG_TITLE];
-        entries[row-1].content = results[CLOG_CONTENT];
-        entries[row-1].c_time  = results[CLOG_C_TIME];
-        entries[row-1].u_time  = results[CLOG_U_TIME];
+        index = row - 1;
+        entries[index].id = strtol(results[CLOG_ID], NULL, 10);
+        entries[index].title   = results[CLOG_TITLE];
+        entries[index].content = results[CLOG_CONTENT];
+
+        entries[index].c_time = (char *)malloc(sizeof(char) * 32);
+        entries[index].u_time = (char *)malloc(sizeof(char) * 32);
+
+        if (results[CLOG_C_TIME] == NULL) {
+            entries[index].c_time = NULL;
+        } else {
+            rfc_date(entries[index].c_time, strtol(results[CLOG_C_TIME], NULL, 10));
+        }
+
+        if (results[CLOG_U_TIME] == NULL) {
+            entries[index].u_time = NULL;
+        } else {
+            rfc_date(entries[index].u_time, strtol(results[CLOG_U_TIME], NULL, 10));
+        }
     }
 
 
@@ -167,13 +182,23 @@ int generate_entries(int window, int id, const char *template_file) {
 
     free(loop_str);
 
+    free_entries(entries, r);
+
     sqlite3_free_table(results);
 
     sqlite3_close(db);
     return 0;
 }
 
-void output_entry(const char *tmplate, const entry_t e) {
+int free_entries(entry_t entries[], int count) {
+    int i;
+    for (i = 0; i < count; i++) {
+        free(entries[i].c_time);
+        free(entries[i].u_time);
+    }
+}
+
+void output_entry(char *tmplate, const entry_t e) {
     char *pt;
     char tag[20];
     int i;
@@ -213,3 +238,10 @@ int error_log(const char *fmt, ...) {
     return (ret);
 }
 
+void rfc_date(char *d_str, time_t time) {
+    struct tm *date;
+    const char *format = "%a, %d %b %Y %H:%M:%S %z";
+
+    date = localtime((const time_t *)&time);
+    (void)strftime(d_str, 32, format, date);
+}

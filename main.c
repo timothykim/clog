@@ -16,7 +16,6 @@ int main() {
             get_param(gets, "format", type, 20);
         }
 
-
         if (strcmp(type, "html") == 0) {
             printf("Content-type: application/xhtml+xml; charset=UTF-8\r\n"
                     "\r\n");

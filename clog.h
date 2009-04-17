@@ -39,6 +39,8 @@ typedef struct entry {
     char *u_time;
 } entry_t;
 
+int free_entries(entry_t entries[], int count);
+
 /* sqlite3 query function wrapper */
 int db_modify_table(const char *);
 
@@ -56,8 +58,10 @@ int generate_entries(int, int, const char *);
 /* remove_entry(id) */
 int remove_entry(int);
 
-void output_entry(const char *, const entry_t);
+void output_entry(char *, const entry_t);
 
 int error_log(const char *fmt, ...);
+
+void rfc_date(char *d_str, time_t time);
 
 #endif
