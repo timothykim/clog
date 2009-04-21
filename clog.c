@@ -32,6 +32,7 @@ int db_modify_table(const char *q) {
 
 int add_entry(const char *title, const char *content) {
     char *q;
+    int rs;
 
     /* TODO: make sure the q size is correct including time() */
     q = (char *)malloc(sizeof(char) * (70 + strlen(title) + strlen(content)));
@@ -39,12 +40,15 @@ int add_entry(const char *title, const char *content) {
     sprintf(q, "INSERT INTO entries (title, content, c_time) "
                "VALUES ( \"%s\", \"%s\", %d);",
                (title), (content), time(NULL));
+    rs = db_modify_table(q);
+    free(q);
 
-    return db_modify_table(q);
+    return rs;
 }
 
 int update_entry(int id, const char *title, const char *content) {
     char *q;
+    int rs;
 
     /* TODO: make sure the q size is correct including id */
     q = (char *)malloc(sizeof(char) * (70 + strlen(title) + strlen(content)));
@@ -56,18 +60,25 @@ int update_entry(int id, const char *title, const char *content) {
                "WHERE id=%d;",
                title, content, time(NULL), id);
 
-    return db_modify_table(q);
+    rs = db_modify_table(q);
+    free(q);
+
+    return rs;
 }
 
 int remove_entry(int id) {
     char *q;
+    int rs;
 
     /* TODO: make sure the q size is correct with the id */
     q = (char *)malloc(sizeof(char) * 70);
 
     sprintf(q, "UPDATE entries SET deleted=1 WHERE id=%d;", id);
 
-    return db_modify_table(q);
+    rs = db_modify_table(q);
+    free(q);
+
+    return rs;
 }
 
 
