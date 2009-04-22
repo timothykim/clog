@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include "db.h"
@@ -109,7 +110,7 @@ clog_modify_db(
 				"VALUES ('%s','%s',%d)",
 				transaction->title,
 				transaction->content,
-				transaction->time);
+				(int)transaction->time);
 		break;
 		
 	case CLOG_DB_UPDATE:
@@ -122,7 +123,7 @@ clog_modify_db(
 				"LIMIT 1",
 				transaction->title,
 				transaction->content,
-				transaction->time,
+				(int)transaction->time,
 				transaction->id);
 		break;
 

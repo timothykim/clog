@@ -39,7 +39,7 @@ int add_entry(const char *title, const char *content) {
 
     sprintf(q, "INSERT INTO entries (title, content, c_time) "
                "VALUES ( \"%s\", \"%s\", %d);",
-               (title), (content), time(NULL));
+               (title), (content), (int)time(NULL));
     rs = db_modify_table(q);
     free(q);
 
@@ -58,7 +58,7 @@ int update_entry(int id, const char *title, const char *content) {
                "content=\"%s\" "
                "u_time=%d"
                "WHERE id=%d;",
-               title, content, time(NULL), id);
+               title, content, (int)time(NULL), id);
 
     rs = db_modify_table(q);
     free(q);
@@ -84,13 +84,13 @@ int remove_entry(int id) {
 
 int generate_entries(int window, int id, const char *template_file) {
     sqlite3 *db;
-    sqlite3_stmt *stmt;
+    // sqlite3_stmt *stmt;
     int rc;
     char *zErrMsg = 0;
     char *q;
     char **results = 0;
-    int column, c;
-    int row, r;
+    int c; // number of columns returned from query
+    int row, r; // r: number of rows returned from query
     FILE *fc;
     char buffer[FILE_BUFFER_SIZE];
     char *loop_str;
@@ -127,7 +127,7 @@ int generate_entries(int window, int id, const char *template_file) {
 
     entry_t entries[r];
 
-    char index;
+    int index;
     for (row = 1; row <= r; row++) {
         index = row - 1;
         entries[index].id = strtol(results[CLOG_ID], NULL, 10);
