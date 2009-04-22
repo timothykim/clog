@@ -230,13 +230,24 @@ void output_entry(char *tmplate, const entry_t e) {
 
             if (strcmp(tag, "id") == 0) printf("%d", e.id);
             if (strcmp(tag, "title") == 0 && e.title != NULL) printf("%s", e.title);
-            if (strcmp(tag, "content") == 0 && e.content != NULL) printf("%s", e.content);
+            if (strcmp(tag, "content") == 0 && e.content != NULL) htmlize_print(e.content);
             if (strcmp(tag, "c_time") == 0 && e.c_time != NULL) printf("%s", e.c_time);
             if (strcmp(tag, "u_time") == 0 && e.u_time != NULL) printf("%s", e.u_time);
         } else {
             printf("%c", *pt);
         }
         pt++;
+    }
+}
+
+void htmlize_print(char *str) {
+    char *sep = "\n";
+    char *paragraph;
+
+    paragraph = strtok(str, sep);
+    while(paragraph != NULL) {
+        printf("<p>%s</p>\n\n", paragraph);
+        paragraph = strtok(NULL, sep);
     }
 }
 

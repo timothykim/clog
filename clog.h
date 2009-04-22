@@ -63,6 +63,11 @@ int remove_entry(int);
 
 void output_entry(char *, const entry_t);
 
+/*
+ * prints str where two or more \n are converted to <p> 
+ */
+void htmlize_print(char *str);
+
 int error_log(const char *fmt, ...);
 
 void rfc_date(char *d_str, time_t time);

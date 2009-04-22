@@ -9,6 +9,7 @@ void get_param(char *q_str, char *search, char *ret, size_t n);
 int main() {
     char type[20] = "html";
 
+
     while (FCGI_Accept() >= 0) {
         if(getenv("QUERY_STRING") != NULL) {
             char gets[1000];
