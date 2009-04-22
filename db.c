@@ -82,7 +82,7 @@ clog_modify_db(
 
 	case CLOG_DB_INSERT:
 		len = snprintf(querystr, qlen,
-					   "INSERT INTO clog "
+					   "INSERT INTO entries "
 					   "(title, content, c_time) "
 					   "VALUES ('%s','%s',%d)",
 					   transaction->title,
@@ -92,7 +92,7 @@ clog_modify_db(
 
 	case CLOG_DB_UPDATE:
 		len = snprintf(querystr, qlen,
-					   "UPDATE clog SET "
+					   "UPDATE entries SET "
 					   "title = '%s',"
 					   "content = '%s',"
 					   "u_time = %d "
@@ -106,7 +106,7 @@ clog_modify_db(
 
 	case CLOG_DB_DELETE:
 		len = snprintf(querystr, qlen,
-					   "DELETE FROM clog "
+					   "DELETE FROM entries "
 					   "WHERE id = %d "
 					   "LIMIT 1", 
 					   transaction->id);
