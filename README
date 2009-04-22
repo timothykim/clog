@@ -11,7 +11,9 @@ TODO:
 
 1. Block SQL injection
 2. Add reddit style html formatting
-3. ... many more...
+3. Add a nice str_replace() function
+
+N. ... many more...
 
 
 
