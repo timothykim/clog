@@ -9,6 +9,8 @@
 #define SYMBOL_PAD   (4)
 #define RFCDATE_PAD (32)
 
+typedef sqlite3 clog_db;
+
 typedef enum {
 	CLOG_DB_INSERT,
 	CLOG_DB_UPDATE,
@@ -23,14 +25,13 @@ struct clog_transaction {
 	time_t time;
 };
 
-sqlite3 *clog_db_open(const char *name);
-void clog_db_close(sqlite3 *db);
+clog_db *clog_db_open(const char *name);
+void clog_db_close(clog_db *db);
 
 int 
 clog_modify_db(
-	sqlite3 *db, 
+	clog_db *database_handle, 
 	struct clog_transaction *transaction);
-
 
 
 #endif /* __CLOG_DB__ */
