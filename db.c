@@ -1,6 +1,4 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <sqlite3.h>
 #include <time.h>
 
 #include "db.h"
@@ -33,7 +31,7 @@ clog_allocate_query(
 	int total_length;
 
 	if (!transaction ||
-      !transaction->title ||
+		!transaction->title ||
 		!transaction->content) {
 		return NULL;
 	}
@@ -49,7 +47,7 @@ clog_allocate_query(
 		query = (char *) realloc(query, total_length);
 		querylen = total_length;
 	}
-
+	
 	(*qlen) = querylen;
 	return query;
 }
@@ -75,8 +73,10 @@ clog_modify_db(
 		transaction->id < 0) {
 		return -1;
 	}
-
+	
 	querystr = clog_allocate_query(transaction, &qlen);
+
+	// TODO: take care of single-quote(') and backslash (\)
 
 	switch (mtype) {
 
@@ -89,7 +89,7 @@ clog_modify_db(
 					   transaction->content,
 					   transaction->time);
 		break;
-
+		
 	case CLOG_DB_UPDATE:
 		len = snprintf(querystr, qlen,
 					   "UPDATE entries SET "
