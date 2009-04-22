@@ -5,7 +5,7 @@ OBJS = main.o clog.o
 SRCS = $(OBJS:.o=.c)
 
 clog: $(OBJS)
-	$(CC) -o clog $(OBJS) -lsqlite3 -lfcgi
+	$(CC) -o clog.cgi $(OBJS) -lsqlite3 -lfcgi
 
 dep:
 	gccmakedep $(SRCS)

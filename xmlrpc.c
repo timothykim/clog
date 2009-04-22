@@ -1,42 +1,36 @@
-#include <stdlib.h>
-#include <stdio.h>
+#include <xmlrpc.h>
+#include <xmlrpc_cgi.h>
 
-#include <xmlrpc-c/base.h>
-#include <xmlrpc-c/server.h>
-#include <xmlrpc-c/server_cgi.h>
+xmlrpc_value *
+sumAndDifference (xmlrpc_env *env, xmlrpc_value *param_array, void *user_data)
+{
+    xmlrpc_int32 x, y;
 
-#include "config.h"
-
-
-static xmlrpc_value *
-sample_add(xmlrpc_env *   const env,
-           xmlrpc_value * const param_array,
-           void *         const user_data) {
-
-    xmlrpc_int32 x, y, z;
-
-    xmlrpc_decompose_value(env, param_array, "(ii)", &x, &y);
-    /*
-    if (env->fault_occured)
+    /* Parse our argument array. */
+    xmlrpc_parse_value(env, param_array, "(ii)", &x, &y);
+    if (env->fault_occurred)
         return NULL;
-        */
 
-    z = x + y;
-
-    return xmlrpc_build_value(env, "i", z);
+    /* Return our result. */
+    return xmlrpc_build_value(env, "{s:i,s:i}",
+                              "sum", x + y,
+                              "difference", x - y);
 }
 
+int main (int argc, char **argv)
+{
+    /* Set up our CGI library. */
+    xmlrpc_cgi_init(XMLRPC_CGI_NO_FLAGS);
 
-int
-main() {
-    xmlrpc_registry * registryP;
-    xmlrpc_env env;
+    /* Install our only method (with a method signature and a help string). */
+    xmlrpc_cgi_add_method_w_doc("sample.sumAndDifference",
+                                &sumAndDifference, NULL,
+                                "S:ii", "Add and subtract two integers.");
 
-    xmlrpc_env_init(&env);
-    registryP = xmlrpc_registry_new(&env);
-    xmlrpc_registry_add_method(
-        &env, registryP, NULL, "sample.add", &sample_add, NULL);
-    xmlrpc_server_cgi_process_call(registryP);
-    xmlrpc_registry_free(registryP);
-    return 0;
+    /* Call the appropriate method. */
+    xmlrpc_cgi_process_call();
+
+    /* Clean up our CGI library. */
+    xmlrpc_cgi_cleanup();
 }
+

@@ -8,7 +8,7 @@ DTD/xhtml1-transitional.dtd">
     <style type="text/css">
         @import url('/style/clog.css');
     </style>
-    <title>timothylive.net</title>
+    <title>timothylive.net - Blog of Timothy Kim</title>
 </head>
 <!--
                                       __ 
@@ -24,7 +24,7 @@ DTD/xhtml1-transitional.dtd">
     </noscript>
     <div id="body_wrapper">
         <div id="header">
-            <h1>timothylive.net</h1>
+            <h1>Blog of Timothy Kim</h1>
         </div>
         <div id="body">
 
@@ -40,7 +40,12 @@ DTD/xhtml1-transitional.dtd">
 {=loop_end=}
 
         </div>
+        <div id="sidebar">
+            <h1>Other Stuff</h1>
+            <small>like my flickr, twitter, delicious, etc.</small>
+        </div>
         <div id="footer">
+						This blog is powered by <a href="http://github.com/highwind/clog/tree/master">clog</a>, a blog engine written in C. Yes, C.
         </div>
     </div>
 </body>

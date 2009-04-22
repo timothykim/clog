@@ -7,13 +7,14 @@
 void get_param(char *q_str, char *search, char *ret, size_t n);
 
 int main() {
-    char type[20] = "html";
-
-
     while (FCGI_Accept() >= 0) {
+        char type[20] = "html";
+        char entry[10] = "0";
+
         if(getenv("QUERY_STRING") != NULL) {
             char gets[1000];
             strcpy(gets, getenv("QUERY_STRING"));
+            get_param(gets, "entry", entry, 10);
             get_param(gets, "format", type, 20);
         }
 
@@ -34,8 +35,12 @@ int main() {
         }
 
         strcat(type, ".ct");
-        generate_entries(10, 1, type);
-
+        if(strcmp(entry,"0") == 0) {
+            generate_entries(10, 1, type);
+        } else { 
+            generate_entries(1, strtol(entry, NULL, 10), type);
+            free(entry);
+        }
     }
 
     return 0;

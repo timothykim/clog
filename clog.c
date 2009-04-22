@@ -101,14 +101,16 @@ int generate_entries(int window, int id, const char *template_file) {
     q = (char *)malloc(sizeof(char) * 250);
 
     sprintf(q, "SELECT "
-               "id, title, content, "
-               "c_time, "
-               "u_time "
-               "FROM entries "
-               "WHERE id >= %d AND deleted = 0 "
-               "ORDER BY c_time DESC "
-               "LIMIT %d ",
-               id, window);
+            "id, title, content, "
+            "c_time, "
+            "u_time "
+            "FROM entries "
+            "WHERE id %s %d AND deleted = 0 "
+            "ORDER BY c_time DESC "
+            "LIMIT %d ",
+            (window == 1) ? "=" : ">=",
+            id, window);
+
 
     rc = sqlite3_open(DATABASE, &db);
 
