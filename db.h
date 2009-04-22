@@ -1,6 +1,7 @@
 #ifndef __CLOG_DB__
 #define __CLOG_DB__
 
+#include <sqlite3.h>
 #include <stdio.h>
 #include <time.h>
 
@@ -21,5 +22,15 @@ struct clog_transaction {
 	char *content;
 	time_t time;
 };
+
+sqlite3 *clog_db_open(const char *name);
+void clog_db_close(sqlite3 *db);
+
+int 
+clog_modify_db(
+	sqlite3 *db, 
+	struct clog_transaction *transaction);
+
+
 
 #endif /* __CLOG_DB__ */
