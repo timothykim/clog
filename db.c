@@ -3,6 +3,16 @@
 
 #include "db.h"
 
+
+// compute nearest power of two that is
+// greater than or equal to n
+inline int pow2(int n)
+{
+	int i;
+	for (i=1;i<n;i*=2); 
+	return i;
+}
+
 sqlite3 *
 clog_db_open(const char *name)
 {
@@ -39,6 +49,7 @@ clog_allocate_query(
 	total_length += strlen(transaction->title) + SYMBOL_PAD;
 	total_length += strlen(transaction->content) + SYMBOL_PAD;
 	total_length += RFCDATE_PAD + QUERY_PAD;
+	total_length = pow2(total_length);
 
 	if (!query) {
 		query = (char *) malloc(total_length);
