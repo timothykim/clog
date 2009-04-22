@@ -1,7 +1,7 @@
 .SUFFIXES : .c .o 
-CFLAGS = -g -O0
+CFLAGS = -g -O0 -Wall -I./
 CC = gcc
-OBJS = main.o clog.o 
+OBJS = main.o clog.o db.o
 SRCS = $(OBJS:.o=.c)
 
 clog: $(OBJS)
@@ -11,7 +11,10 @@ dep:
 	gccmakedep $(SRCS)
 
 clean:
-	rm $(OBJS) clog core
+	rm -f $(OBJS) clog core *~
 
 main.o: main.c clog.h
-clog.o: clog.c 
+clog.o: clog.c db.h
+db.o: db.c
+
+
