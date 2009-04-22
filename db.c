@@ -3,6 +3,17 @@
 
 #include "db.h"
 
+// clog_allocate_query() allocates memory for a 
+// string that is enough to hold whatever is contained
+// in the *transaction object. -qlen- upon a successful
+// return will contain the exact size of the string.
+// to avoid, malloc'ing all the time, buffer is reused.
+static char *
+clog_allocate_query(
+	struct clog_transaction *transaction,
+	int *qlen);
+
+
 
 // compute nearest power of two that is
 // greater than or equal to n
