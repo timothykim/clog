@@ -82,34 +82,34 @@ clog_modify_db(
 
 	case CLOG_DB_INSERT:
 		len = snprintf(querystr, qlen,
-					   "INSERT INTO entries "
-					   "(title, content, c_time) "
-					   "VALUES ('%s','%s',%d)",
-					   transaction->title,
-					   transaction->content,
-					   transaction->time);
+				"INSERT INTO entries "
+				"(title, content, c_time) "
+				"VALUES ('%s','%s',%d)",
+				transaction->title,
+				transaction->content,
+				transaction->time);
 		break;
 		
 	case CLOG_DB_UPDATE:
 		len = snprintf(querystr, qlen,
-					   "UPDATE entries SET "
-					   "title = '%s',"
-					   "content = '%s',"
-					   "u_time = %d "
-					   "WHERE id = %d "
-					   "LIMIT 1",
-					   transaction->title,
-					   transaction->content,
-					   transaction->time,
-					   transaction->id);
+				"UPDATE entries SET "
+				"title = '%s',"
+				"content = '%s',"
+				"u_time = %d "
+				"WHERE id = %d "
+				"LIMIT 1",
+				transaction->title,
+				transaction->content,
+				transaction->time,
+				transaction->id);
 		break;
 
 	case CLOG_DB_DELETE:
 		len = snprintf(querystr, qlen,
-					   "DELETE FROM entries "
-					   "WHERE id = %d "
-					   "LIMIT 1", 
-					   transaction->id);
+				"DELETE FROM entries "
+				"WHERE id = %d "
+				"LIMIT 1", 
+				transaction->id);
 		break;
 
 	default:
@@ -118,6 +118,8 @@ clog_modify_db(
 	}
 
 	if (len >= qlen) {
+		// a return value of qlen or more means that the output was truncated. 
+		// don't want truncated a query, bail out.
 		return -1;
 	}
 
