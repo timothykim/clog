@@ -13,8 +13,11 @@ int main() {
 
         if(getenv("QUERY_STRING") != NULL) {
             char gets[1000];
+
             strcpy(gets, getenv("QUERY_STRING"));
             get_param(gets, "entry", entry, 10);
+
+            strcpy(gets, getenv("QUERY_STRING"));
             get_param(gets, "format", type, 20);
         }
 

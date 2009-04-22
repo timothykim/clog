@@ -4,7 +4,10 @@ DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta name="Author" content="Timothy Kim" />
+    <meta name="generator" content="Clog 0.0.1" />
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <link rel="alternate" type="application/rss+xml" title="Blog of Timothy Kim in RSS" href="http://timothylive.net/clog/rss" /> 
     <style type="text/css">
         @import url('/style/clog.css');
     </style>
@@ -30,7 +33,7 @@ DTD/xhtml1-transitional.dtd">
 
 {=loop_begin=}
             <div class="entry" id="entry_{=id=}">
-                <h2 class="title">{=title=}</h2>
+                <h2 class="title"><a href="{=id=}">{=title=}</a></h2>
                 <div class="c_time">{=c_time=}</div>
                 <div class="content">
                     {=content=}
