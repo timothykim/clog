@@ -207,6 +207,7 @@ int free_entries(entry_t entries[], int count) {
         free(entries[i].c_time);
         free(entries[i].u_time);
     }
+	return 0;
 }
 
 void output_entry(char *tmplate, const entry_t e) {
