@@ -22,7 +22,10 @@ int main() {
         }
 
         if (strcmp(type, "html") == 0) {
-            printf("Content-type: application/xhtml+xml; charset=UTF-8\r\n"
+            // application/xhtml+xml doesn't work with IE -_-;;
+            //printf("Content-type: application/xhtml+xml; charset=UTF-8\r\n"
+            // have to serve xhtml as html... IE sucks
+            printf("Content-type: text/html; charset=UTF-8\r\n"
                     "\r\n");
         } else
         if (strcmp(type, "json") == 0) {
