@@ -29,6 +29,23 @@ int db_modify_table(const char *q) {
     return 0;
 }
 
+int add_comment(int entry_id, const char *comment) {
+    char *q;
+    int rs;
+
+    q = (char *)malloc(sizeof(char) * (100 + strlen(comment)));
+
+    sprintf(q, "INSERT INTO comments (entry_id, comment) "
+               "VALUES ( %d, \"%s\"); "
+               "UPDATE entries SET "
+               "comment_count=commnet_count+1 "
+               "WHERE id=%d;",
+               entry_id, comment, entry_id);
+    rs = db_modify_table(q);
+    free(q);
+
+    return rs;
+}
 
 int add_entry(const char *title, const char *content) {
     char *q;
@@ -37,9 +54,9 @@ int add_entry(const char *title, const char *content) {
     /* TODO: make sure the q size is correct including time() */
     q = (char *)malloc(sizeof(char) * (70 + strlen(title) + strlen(content)));
 
-    sprintf(q, "INSERT INTO entries (title, content, c_time) "
-               "VALUES ( \"%s\", \"%s\", %d);",
-               (title), (content), (int)time(NULL));
+    sprintf(q, "INSERT INTO entries (title, content) "
+               "VALUES ( \"%s\", \"%s\");",
+               (title), (content));
     rs = db_modify_table(q);
     free(q);
 
