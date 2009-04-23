@@ -11,6 +11,11 @@ CREATE TABLE IF NOT EXISTS tags
 	name TEXT,
 	count INTEGER);
 
+CREATE TABLE IF NOT EXISTS commnets
+   (id INTEGER PRIMARY KEY AUTOINCREMENT,
+    entry_id INTEGER REFERENCES entries (id),
+    comment TEXT);
+
 CREATE TABLE IF NOT EXISTS entry_tag
    (entry_id INTEGER REFERENCES entries (id),
 	tag_id INTEGER REFERENCES tags (id));
