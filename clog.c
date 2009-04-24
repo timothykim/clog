@@ -266,7 +266,7 @@ void htmlize_print(char *str) {
 
     paragraph = strtok(str, sep);
     while(paragraph != NULL) {
-        printf("<p>%s</p>\n\n", paragraph);
+        printf("%s<p>\n\n", paragraph);
         paragraph = strtok(NULL, sep);
     }
 }

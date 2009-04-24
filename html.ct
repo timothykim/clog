@@ -1,13 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-"http://www.w3.org/TR/xhtml1/    
-DTD/xhtml1-transitional.dtd"> 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
 <head>
-    <meta name="Author" content="Timothy Kim" />
-    <meta name="generator" content="Clog 0.0.1" />
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="Author" content="Timothy Kim">
+    <meta name="generator" content="Clog 0.0.1">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
-    <link rel="alternate" type="application/rss+xml" title="Blog of Timothy Kim in RSS" href="http://timothylive.net/clog/rss" /> 
+    <link rel="alternate" type="application/rss+xml" title="Blog of Timothy Kim in RSS" href="http://timothylive.net/clog/rss"> 
     <style type="text/css">
         @import url('/style/clog.css');
     </style>
@@ -44,64 +43,17 @@ DTD/xhtml1-transitional.dtd">
 
         </div>
         
-        <!--
-            <div style="font-size: 0.8em; position: absolute; top: 0px; left: 34em;">Oh my god... this side panel is DIRTY!!!</div>
-
-
         <div id="sidebar">
 
             <h1>Other Stuff</h1>
 
             <div class="sb_item">
-                <h2>My Flickr Photostream</h2>
-                <!-- Start of Flickr Badge -->
-                <style type="text/css">
-                    .zg_div {margin:0px 5px 5px 0px; width:117px;}
-                    .zg_div_inner { color:#666666; text-align:center; font-family:arial, helvetica; font-size:11px;}
-                    .zg_div a, .zg_div a:hover, .zg_div a:visited {color:#3993ff; background:inherit !important; text-decoration:none !important;}
-                </style>
-                <script type="text/javascript">
-                    zg_insert_badge = function() {
-                        var zg_bg_color = 'ffffff';
-                        var zgi_url = 'http://www.flickr.com/apps/badge/badge_iframe.gne?zg_bg_color='+zg_bg_color+'&zg_person_id=70598351%40N00';
-                        document.write('<iframe style="background-color:#'+zg_bg_color+'; border-color:#'+zg_bg_color+'; border:none;" width="113" height="151" frameborder="0" scrolling="no" src="'+zgi_url+'" title="Flickr Badge"><\/iframe>');
-                    }
-                    zg_toggleWhat = function() {
-                        document.getElementById('zg_whatdiv').style.display = (document.getElementById('zg_whatdiv').style.display != 'none') ? 'none' : 'block';
-                        document.getElementById('zg_whatlink').style.display = (document.getElementById('zg_whatdiv').style.display != 'none') ? 'none' : 'block';
-                        return false;
-                    }
-                </script>
-                <div class="zg_div"><div class="zg_div_inner">
-                    <script type="text/javascript">zg_insert_badge();</script>
-                </div></div>
-                <!-- End of Flickr Badge -->
-            </div>
-            <div class="sb_item">
-                <h2>My Delicious Bookmarks</h2>
-
-                <script type="text/javascript" src="http://feeds.delicious.com/v2/js/highwind81?title=&count=5&sort=date"></script>
+                <h2>Delicious Bookmarks</h2>
+                <script type="text/javascript" src="http://feeds.delicious.com/v2/js/highwind81?title=&amp;count=5&amp;sort=date"></script>
             </div>
 
-            <div class="sb_item">
-                <h2>My Twitter Feed</h2>
-                <script type="text/javascript" src=""></script>
-            </div>
-
-            <div class="sb_item">
-                <h2>My Projects</h2>
-                <script type="text/javascript" src=""></script>
-            </div>
-
-            <div class="sb_item">
-                <h2>My Youtube Channel</h2>
-            </div>
-
-            <div class="sb_item">
-                <h2>My Blog Friends</h2>
-            </div>
         </div>
-        -->
+
         <div id="footer">
 						This blog is powered by <a href="http://github.com/highwind/clog/tree/master">clog</a>, a blog engine written in C. Yes, C.
         </div>
