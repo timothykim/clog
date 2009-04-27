@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS entries
     title TEXT,
     content TEXT,
     c_time INTEGER,
-    u_time INTEGER DEFAULT CURRENT_TIMESTAMP,
+    u_time INTEGER,
 	deleted INTEGER DEFAULT 0,
     comment_count INTEGER DEFAULT 0);
 
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS tags
 CREATE TABLE IF NOT EXISTS commnets
    (id INTEGER PRIMARY KEY AUTOINCREMENT,
     entry_id INTEGER REFERENCES entries (id),
-    c_time INTEGER DEFAULT CURRENT_TIMESTAMP,
+    c_time INTEGER,
     comment TEXT);
 
 CREATE TABLE IF NOT EXISTS entry_tag

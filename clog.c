@@ -261,13 +261,36 @@ void output_entry(char *tmplate, const entry_t e) {
 }
 
 void htmlize_print(char *str) {
-    char *sep = "\n";
+    char *sep = "\n\r";
     char *paragraph;
 
+    int do_not_format = 0;
+
     paragraph = strtok(str, sep);
+
+    if (strstr(paragraph, "<pre")) {
+        do_not_format = 1;
+    }
+
     while(paragraph != NULL) {
-        printf("%s<p>\n\n", paragraph);
+        if (do_not_format) {
+            printf("%s\n", paragraph);
+        } else {
+            printf("<p>%s</p>\n\n", paragraph);
+        }
+
         paragraph = strtok(NULL, sep);
+
+        if (paragraph) {
+            if (strstr(paragraph, "<pre")) {
+                do_not_format = 1;
+            }
+            if (strstr(paragraph,"</pre>")) {
+                printf("%s\n", paragraph);
+                paragraph = strtok(NULL, sep);
+                do_not_format = 0;
+            }
+        }
     }
 }
 
