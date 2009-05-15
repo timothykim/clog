@@ -11,6 +11,7 @@
 #define CLOG_CONTENT row * c + 2
 #define CLOG_C_TIME row * c + 3
 #define CLOG_U_TIME row * c + 4
+#define CLOG_COMMENT_COUNT row * c + 5
 
 #define CLOG_TYPE_JSON 0
 #define CLOG_TYPE_RSS_2_0 1
@@ -40,6 +41,7 @@ typedef struct entry {
     char *content;
     char *c_time;
     char *u_time;
+    int comment_count;
 } entry_t;
 
 int free_entries(entry_t entries[], int count);
@@ -48,7 +50,7 @@ int free_entries(entry_t entries[], int count);
 int db_modify_table(const char *);
 
 /* add_entry(title, content) */
-int add_etnry(const char *, const char *);
+int add_entry(const char *, const char *);
 
 /* update_entry(id, title, content) */
 int update_entry(int, const char *, const char *);
@@ -57,6 +59,9 @@ int update_entry(int, const char *, const char *);
  *  generate_entries(# of entries, starting entry, template file)
  */
 int generate_entries(int, int, const char *);
+
+/* generate_comments(entry, template file) */
+int generate_comments(int, const char *);
 
 /* remove_entry(id) */
 int remove_entry(int);

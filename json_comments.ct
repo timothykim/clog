@@ -1,0 +1,13 @@
+{
+    "comments": [
+{=loop_begin=}
+        {
+            "id": {=id=},
+            "created": "{=c_time=}"
+            "comment_id": "{=u_time=}"
+            "comment": "{=content=}"
+        },
+{=loop_end=}
+        null
+    ]
+}

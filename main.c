@@ -10,6 +10,7 @@ int main() {
     while (FCGI_Accept() >= 0) {
         char type[20] = "html";
         char entry[10] = "0";
+        char comments[6] = "false";
 
         if(getenv("QUERY_STRING") != NULL) {
             char gets[1000];
@@ -19,7 +20,11 @@ int main() {
 
             strcpy(gets, getenv("QUERY_STRING"));
             get_param(gets, "format", type, 20);
+
+            strcpy(gets, getenv("QUERY_STRING"));
+            get_param(gets, "get_comments", comments, 6);
         }
+
 
         if (strcmp(type, "html") == 0) {
             // application/xhtml+xml doesn't work with IE -_-;;
@@ -37,18 +42,24 @@ int main() {
                     "\r\n");
         } else {
             printf("Status: 400 Bad Request\r\n\r\n");
-            return 0;
+            break;
         }
+
+        /* generate comments */
+        if (strcmp(comments, "true") == 0) {
+            strcat(type, "_comment.ct");
+            generate_comments(strtol(entry, NULL, 10), type);
+            break;
+        }
+
 
         strcat(type, ".ct");
         if(strcmp(entry,"0") == 0) {
             generate_entries(10, 1, type);
         } else { 
             generate_entries(1, strtol(entry, NULL, 10), type);
-            free(entry);
         }
     }
-
     return 0;
 }
 

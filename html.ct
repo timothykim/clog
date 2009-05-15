@@ -12,10 +12,11 @@
     </style>
 
     <script type="text/javascript" src="/scripts/jquery-1.3.2.min.js"></script>
-    <script type="text/javascript" src="/scripts/twitter.js"></script>
+    <script type="text/javascript" src="/scripts/clog.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             displayTweets();
+            displayLastfm();
         });
     </script>
 
@@ -47,6 +48,14 @@
                     {=content=}
                 </div>
                 <div class="u_time">{=u_time=}</div>
+                <div class="meta">
+                    <div class="tags">
+                        Tags: <a href="#">+</a>
+                    </div>
+                    <div class="comments">
+                        <a name="comments" href="{=id=}#comments"><big>&#10000;</big> Comments{=comment_count=}</a>
+                    </div>
+                </div>
             </div>
 {=loop_end=}
 
@@ -58,10 +67,18 @@
             <div class="sb_item">
                 <h2>Archives</h2>
                 <ul id="archives">
-										<li><a href="/blog">Timothy Kim::Blog</a> - from August of 2006 to April of 2009</li>
-										<li><a href="#">Highwind online 8</a> - in the search of backup...</li>
-										<li><a href="#">kgfamily.com/highwind</a> - in the search of backup...</li>
-										<li><a href="http://www.cyworld.com/whatda">cyworld</a> - from June of 2003 to March of 2004</li>
+                    <li><a href="/blog">Timothy Kim::Blog</a> - from August of 2006 to April of 2009</li>
+                    <li><a href="#">Highwind online 8</a> - in the search of backup...</li>
+                    <li><a href="#">kgfamily.com/highwind</a> - in the search of backup...</li>
+                    <li><a href="http://www.cyworld.com/whatda">cyworld</a> - from June of 2003 to March of 2004</li>
+                </ul>
+            </div>
+
+            <div class="sb_item">
+                <h2>Projects</h2>
+                <ul id="projects">
+                    <li><a href="http://dickensurl.com">DickensURL.com</a></li>
+                    <li><a href="http://timothylive.net/pangram_maker.html">팬그램 메이커</a></li>
                 </ul>
             </div>
 
@@ -78,15 +95,35 @@
 
             <div class="sb_item">
                 <h2>Random Flickr Picture</h2>
-								<div id="flickr">
-										<script type="text/javascript" src="http://www.flickr.com/badge_code_v2.gne?count=1&amp;display=random&amp;size=m&amp;layout=v&amp;source=user&amp;user=70598351%40N00"></script>
-								</div>
+                <div id="flickr">
+                    <script type="text/javascript" src="http://www.flickr.com/badge_code_v2.gne?count=1&amp;display=random&amp;size=m&amp;layout=v&amp;source=user&amp;user=70598351%40N00"></script>
+                </div>
             </div>
+
+            <div class="sb_item">
+                <h2>Last.fm</h2>
+                <ul id="lastfm">
+                </ul>
+            </div>
+
         </div>
 
         <div id="footer">
-						This blog is powered by <a href="http://github.com/highwind/clog/tree/master">clog</a>, a blog engine written in C. Yes, C.
+            This blog is powered by <a href="http://github.com/highwind/clog/tree/master">clog</a>, a blog engine written in C. Yes, C.
+        </div>
+        <div id="footnote">
+            This blog does NOT conform to any of the w3c standards nor does it tries to. As long as it is accessible from any browser, links to IE6 to latest webkit build, I am happy. Yes, I am getting old.
         </div>
     </div>
+<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-2039529-1");
+        pageTracker._trackPageview();
+    } catch(err) {}
+</script>
 </body>
 </html>

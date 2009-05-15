@@ -120,14 +120,14 @@ int generate_entries(int window, int id, const char *template_file) {
     sprintf(q, "SELECT "
             "id, title, content, "
             "c_time, "
-            "u_time "
+            "u_time, "
+            "comment_count "
             "FROM entries "
             "WHERE id %s %d AND deleted = 0 "
             "ORDER BY c_time DESC "
             "LIMIT %d ",
             (window == 1) ? "=" : ">=",
             id, window);
-
 
     rc = sqlite3_open(DATABASE, &db);
 
@@ -153,6 +153,7 @@ int generate_entries(int window, int id, const char *template_file) {
 
         entries[index].c_time = (char *)malloc(sizeof(char) * 32);
         entries[index].u_time = (char *)malloc(sizeof(char) * 32);
+        entries[index].comment_count = strtol(results[CLOG_COMMENT_COUNT], NULL, 10);
 
         if (results[CLOG_C_TIME] == NULL) {
             entries[index].c_time = NULL;
@@ -253,11 +254,16 @@ void output_entry(char *tmplate, const entry_t e) {
             if (strcmp(tag, "content") == 0 && e.content != NULL) htmlize_print(e.content);
             if (strcmp(tag, "c_time") == 0 && e.c_time != NULL) printf("%s", e.c_time);
             if (strcmp(tag, "u_time") == 0 && e.u_time != NULL) printf("%s", e.u_time);
+            if (strcmp(tag, "comment_count") == 0 && e.comment_count) printf(" (%d)", e.comment_count);
         } else {
             printf("%c", *pt);
         }
         pt++;
     }
+}
+
+int generate_comments(int entry_id, const char *template_file) {
+    return 0;
 }
 
 void htmlize_print(char *str) {
