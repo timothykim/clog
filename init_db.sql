@@ -21,6 +21,3 @@ CREATE TABLE IF NOT EXISTS comments
 CREATE TABLE IF NOT EXISTS entry_tag
    (entry_id INTEGER REFERENCES entries (id),
 	tag_id INTEGER REFERENCES tags (id));
-
-
-  

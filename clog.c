@@ -5,6 +5,7 @@
 #include <time.h>
 #include <stdarg.h>
 #include <ctype.h>
+#include "hash.h"
 #include "clog.h"
 
 int db_modify_table(const char *q) {
@@ -142,11 +143,18 @@ int generate_entries(int window, int id, const char *template_file) {
         return rc;
     }
 
-    entry_t entries[r];
+    hast_table entries[r];
 
     int index;
     for (row = 1; row <= r; row++) {
         index = row - 1;
+
+        hash_table_init(entries[index]);
+        for (col = 0; col < c; col++) {
+            hash_add(entries[index], results[col], results[row * c + col], NULL);
+        }
+/* 
+
         entries[index].id = strtol(results[CLOG_ID], NULL, 10);
         entries[index].title   = results[CLOG_TITLE];
         entries[index].content = results[CLOG_CONTENT];
@@ -156,19 +164,25 @@ int generate_entries(int window, int id, const char *template_file) {
         entries[index].comment_count = strtol(results[CLOG_COMMENT_COUNT], NULL, 10);
 
         if (results[CLOG_C_TIME] == NULL) {
+            free(entries[index].c_time);
             entries[index].c_time = NULL;
         } else {
             rfc_date(entries[index].c_time, strtol(results[CLOG_C_TIME], NULL, 10));
         }
 
         if (results[CLOG_U_TIME] == NULL) {
+            free(entries[index].u_time);
             entries[index].u_time = NULL;
         } else {
             rfc_date(entries[index].u_time, strtol(results[CLOG_U_TIME], NULL, 10));
         }
+*/
     }
 
+    print_template(template_file, entries);
 
+
+/*
     fc = fopen(template_file, "r");
     if (fc == NULL) {
         error_log("Failed opening template file: %s\n", template_file);
@@ -186,7 +200,7 @@ int generate_entries(int window, int id, const char *template_file) {
         }
 
         if (strcmp(buffer, CLOG_LOOP_END) == 0) {
-            /* now that we ended the loop parse the loop_str for each entries */
+            // now that we ended the loop parse the loop_str for each entries 
             //printf("%s", loop_str);
             for (row = 0; row < r; row++) {
                 output_entry(loop_str, entries[row]);
@@ -197,11 +211,6 @@ int generate_entries(int window, int id, const char *template_file) {
 
         switch (ts) {
             case CLOG_INSIDE_LOOP:
-                /*
-                if (sizeof(loop_str) < (sizeof(char) * (strlen(loop_str) + strlen(buffer) + 1))) {
-                    loop_str = (char *)realloc(loop_str, sizeof(char) * 2 * (sizeof(loop_str) + strlen(buffer) + 1));
-                }
-                */
                 loop_str = (char *)realloc(loop_str, sizeof(char) * (strlen(loop_str) + strlen(buffer) + 1));
                 strcat(loop_str, buffer);
                 break;
@@ -214,6 +223,7 @@ int generate_entries(int window, int id, const char *template_file) {
     free(loop_str);
 
     free_entries(entries, r);
+*/
 
     sqlite3_free_table(results);
 
@@ -263,6 +273,97 @@ void output_entry(char *tmplate, const entry_t e) {
 }
 
 int generate_comments(int entry_id, const char *template_file) {
+    sqlite3 *db;
+
+    char *zErrMsg = 0;
+    int rc;
+    char *q;
+    char **results = 0;
+    int r, c, row;
+    int ts;
+    FILE *fc;
+    char buffer[FILE_BUFFER_SIZE];
+
+    q = (char *)malloc(sizeof(char) * 250);
+
+    sprintf(q, "SELECT "
+               "comment, c_time "
+               "FROM comments "
+               "WHERE entry_id = %d " 
+               "ORDER BY c_time ASC ",
+               entry_id);
+
+    if((rc = sqlite3_open(DATABASE, &db)))
+        return rc;
+    
+    rc = sqlite3_get_table(db, q, &results, &r, &c, &zErrMsg);
+    if (rc != SQLITE_OK) {
+        error_log("SQL error: %s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+        return rc;
+    }
+
+    char *comments[r];
+    char *c_times[r];
+    for (row = 1; row <= r; row++) {
+        comments[row-1] = results[row * c];
+        c_times[row-1] = (char *)malloc(sizeof(char) * 32);
+        if (results[row*c+1] == NULL) {
+            free(c_times[row-1]);
+            c_times[row-1] = NULL;
+        } else {
+            rfc_date(c_times[row-1], strtol(results[row*c+1], NULL, 10));
+        }
+        printf("%s - %s\n", comments[row-1], c_times[row-1]);
+    }
+
+
+    fc = fopen(template_file, "r");
+    if (fc == NULL) {
+        error_log("Failed opening template file: %s\n", template_file);
+        return errno;
+    }
+
+    /*
+    ts = CLOG_BEFORE_LOOP;
+    loop_str = (char *)malloc(sizeof(char));
+    *(loop_str) = 0;
+
+    while (fgets(buffer, sizeof(buffer), fc)) {
+        if (strcmp(buffer, CLOG_LOOP_BEGIN) == 0) {
+            ts = CLOG_INSIDE_LOOP;
+            continue;
+        }
+
+        if (strcmp(buffer, CLOG_LOOP_END) == 0) {
+            // now that we ended the loop parse the loop_str for each entries 
+            //printf("%s", loop_str);
+            for (row = 0; row < r; row++) {
+
+            }
+            ts = CLOG_AFTER_LOOP;
+            continue;
+        }
+
+        switch (ts) {
+            case CLOG_INSIDE_LOOP:
+                loop_str = (char *)realloc(loop_str, sizeof(char) * (strlen(loop_str) + strlen(buffer) + 1));
+                strcat(loop_str, buffer);
+                break;
+            default:
+                printf("%s", buffer);
+                break;
+        }
+    }
+    */
+
+    
+    for(row = 0; row < r; row++) {
+        free(comments[row]);
+        free(c_times[row]);
+    }
+    sqlite3_free_table(results);
+    sqlite3_close(db);
     return 0;
 }
 
@@ -300,6 +401,15 @@ void htmlize_print(char *str) {
     }
 }
 
+
+void print_template(char *filename, hash_table tables[], int rows) {
+    int i;
+    for (int i = 0; i < rows; i++) {
+        hash_print_all(tables[i]);
+    }
+}
+
+/* TODO: write the error to the file */
 int error_log(const char *fmt, ...) {
     int ret;
     va_list ap;

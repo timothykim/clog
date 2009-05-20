@@ -45,20 +45,21 @@ int main() {
             break;
         }
 
-        /* generate comments */
         if (strcmp(comments, "true") == 0) {
             strcat(type, "_comment.ct");
             generate_comments(strtol(entry, NULL, 10), type);
-            break;
+        } else {
+            /* defaults to creating the main blog */
+            strcat(type, ".ct");
+            if(strcmp(entry,"0") == 0) {
+                generate_entries(10, 1, type);
+            } else { 
+                generate_entries(1, strtol(entry, NULL, 10), type);
+            }
         }
 
 
-        strcat(type, ".ct");
-        if(strcmp(entry,"0") == 0) {
-            generate_entries(10, 1, type);
-        } else { 
-            generate_entries(1, strtol(entry, NULL, 10), type);
-        }
+        generate_comments(5, NULL);
     }
     return 0;
 }
