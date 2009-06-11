@@ -8,7 +8,7 @@ void get_param(char *q_str, char *search, char *ret, size_t n);
 
 int main() {
     while (FCGI_Accept() >= 0) {
-        char type[20] = "html";
+        char type[80] = "html";
         char entry[10] = "0";
         char comments[6] = "false";
 
@@ -57,9 +57,6 @@ int main() {
                 generate_entries(1, strtol(entry, NULL, 10), type);
             }
         }
-
-
-        generate_comments(5, NULL);
     }
     return 0;
 }

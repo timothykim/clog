@@ -73,6 +73,7 @@ int remove_entry(int);
  */
 void htmlize_print(char *str);
 void print_comment_count(char *count);
+void print_rfc_date(char *time);
 
 int error_log(const char *fmt, ...);
 

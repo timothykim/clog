@@ -4,8 +4,8 @@
         {
             "id": {=id=},
             "created": "{=c_time=}"
-            "comment_id": "{=u_time=}"
-            "comment": "{=content=}"
+            "entry_id": "{=entry_id=}"
+            "comment": "{=comment=}"
         },
 {=loop_end=}
         null

@@ -222,6 +222,12 @@ int generate_entries(int window, int id, const char *template_file) {
             } else
             if (strcmp(results[col], "comment_count") == 0) {
                 pfptr = print_comment_count;
+            } else
+            if (strcmp(results[col], "c_time") == 0) {
+                pfptr = print_rfc_date;
+            } else
+            if (strcmp(results[col], "u_time") == 0) {
+                pfptr = print_rfc_date;
             }
             hash_add(entries[index], results[col], results[row * c + col], pfptr);
         }
@@ -262,12 +268,13 @@ int generate_comments(int entry_id, const char *template_file) {
     int rc;
     char *q;
     char **results = 0;
-    int r, c; //, col, row;
+    int r, c, col, row;
+    void *pfptr;
 
     q = (char *)malloc(sizeof(char) * 250);
 
     sprintf(q, "SELECT "
-               "comment, c_time "
+               "* "
                "FROM comments "
                "WHERE entry_id = %d " 
                "ORDER BY c_time ASC ",
@@ -282,36 +289,29 @@ int generate_comments(int entry_id, const char *template_file) {
         sqlite3_free(zErrMsg);
         return rc;
     }
+    
+    hash_table comments[r];
+
+    int index;
+    for (row = 1; row <= r; row++) {
+        index = row - 1;
+
+        hash_table_init(comments[index]);
+        for (col = 0; col < c; col++) {
+            pfptr = NULL;
+            if (strcmp(results[col], "comment") == 0) {
+                pfptr = print_comment_count;
+            } else
+            if (strcmp(results[col], "c_time") == 0) {
+                pfptr = print_rfc_date;
+            }
+            hash_add(comments[index], results[col], results[row * c + col], pfptr);
+        }
+    }
+
+    print_template(template_file, comments, r);
 
     free(q);
-
-    /*
-    char *comments[r];
-    char *c_times[r];
-    for (row = 1; row <= r; row++) {
-        comments[row-1] = results[row * c];
-        c_times[row-1] = (char *)malloc(sizeof(char) * 32);
-        if (results[row*c+1] == NULL) {
-            free(c_times[row-1]);
-            c_times[row-1] = NULL;
-        } else {
-            rfc_date(c_times[row-1], strtol(results[row*c+1], NULL, 10));
-        }
-        printf("%s - %s\n", comments[row-1], c_times[row-1]);
-    }
-
-
-    fc = fopen(template_file, "r");
-    if (fc == NULL) {
-        error_log("Failed opening template file: %s\n", template_file);
-        return errno;
-    }
-    
-    for(row = 0; row < r; row++) {
-        free(comments[row]);
-        free(c_times[row]);
-    }
-    */
     sqlite3_free_table(results);
     sqlite3_close(db);
     return 0;
@@ -367,6 +367,14 @@ int error_log(const char *fmt, ...) {
     ret = fprintf(stderr, fmt, ap);
     va_end(ap);
     return (ret);
+}
+
+void print_rfc_date(char *time) {
+    if (time != NULL) {
+        char date[50];
+        rfc_date(date, strtol(time, NULL, 10));
+        printf("%s", date);
+    }
 }
 
 void rfc_date(char *d_str, time_t time) {
