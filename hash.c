@@ -16,6 +16,7 @@ void hash_free(hash_table h) {
     hash_t *curr;
     hash_t *prev;
     for (i = 0; i < BUCKET_SIZE; i++) {
+        curr = h[i];
         while (curr != NULL) {
             prev = curr;
             curr = curr->next;

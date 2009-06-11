@@ -132,15 +132,20 @@ int print_template(const char *template_file, hash_table h[], int count) {
                         strncpy(key, open, key_size);
                         key[key_size] = 0;
                         hash_print(h[i], key);
+                        free(key);
                     }
                     printf("%c", *pt);
                     pt++;
                 }
             }
+            free(loop_str);
+            loop_str = (char *)malloc(sizeof(char) * 1);
+            loop_str[0] = 0;
             continue; /* keep the CLOG_LOOP_END from priting */
         }
         printf("%s", buffer);
     }
+    free(loop_str);
 
     return 0;
 }
@@ -172,7 +177,7 @@ int generate_entries(int window, int id, const char *template_file) {
     char **results = 0;
     int col, c; // number of columns returned from query
     int row, r; // r: number of rows returned from query
-    int i; //generic counter (DO NOT USE IT FOR STORAGE)
+    //int i; //generic counter (DO NOT USE IT FOR STORAGE)
     void *pfptr;
 
     q = (char *)malloc(sizeof(char) * 250);
@@ -201,6 +206,7 @@ int generate_entries(int window, int id, const char *template_file) {
         sqlite3_free(zErrMsg);
         return rc;
     }
+    free(q);
 
     hash_table entries[r];
 
@@ -223,11 +229,13 @@ int generate_entries(int window, int id, const char *template_file) {
 
     print_template(template_file, entries, r);
 
-    sqlite3_free_table(results);
-    sqlite3_close(db);
+    /*
     for (i = 0; i < r; i++) {
         hash_free(entries[r]);
     }
+    */
+    sqlite3_free_table(results);
+    sqlite3_close(db);
     return 0;
 }
 
@@ -274,6 +282,8 @@ int generate_comments(int entry_id, const char *template_file) {
         sqlite3_free(zErrMsg);
         return rc;
     }
+
+    free(q);
 
     /*
     char *comments[r];
