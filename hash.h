@@ -36,7 +36,9 @@ typedef hash_t *hash_table[BUCKET_SIZE];
 void hash_table_init(hash_table h);
 
 /* only frees the structs not the strings
- * you do that yourself!  */
+ * you do that yourself! 
+ * so DO NOT call this unless you have already manually removed all the strings
+ * if you are using clog, then just call sqlite3_free_table */
 void hash_free(hash_table h);
 
 /* this function does NOT copy *key, *val

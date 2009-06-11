@@ -35,6 +35,7 @@ void hash_add(hash_table h, char *key, char *val, printer *f) {
     new->key = key;
     new->val = val;
     new->print_f = f;
+    new->next = NULL;
 
     //if no collision
     if (h[k] == NULL) {
@@ -60,7 +61,9 @@ void hash_print(hash_table table, char *key) {
     if (h == NULL) {
         return;
     } else if (h->print_f == NULL) {
-        printf("%s", h->val);
+        if (h->val != NULL) {
+            printf("%s", h->val);
+        }
     } else {
         h->print_f(h->val);
     }

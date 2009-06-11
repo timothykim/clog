@@ -84,6 +84,69 @@ int update_entry(int id, const char *title, const char *content) {
     return rs;
 }
 
+
+int print_template(const char *template_file, hash_table h[], int count) {
+    FILE *fc;
+    int i;
+    int key_size;
+    char buffer[FILE_BUFFER_SIZE];
+    char *pt;
+    char *key;
+    char *open;
+    char *close;
+    char *loop_str;
+    loop_str = (char *)malloc(sizeof(char) * 1);
+    loop_str[0] = 0;
+
+    fc = fopen(template_file, "r");
+    if (fc == NULL) {
+        error_log("Failed opening template file: %s\n", template_file);
+        return errno;
+    }
+
+    /* read in the template and just output the buffer */
+    while (fgets(buffer, sizeof(buffer), fc)) {
+        /* if we hit the loop parse and output */
+        if (strcmp(buffer, CLOG_LOOP_BEGIN) == 0) {
+            /* build up the loop template */
+            while (fgets(buffer, sizeof(buffer), fc)) {
+                /* we hit the end of the loop */
+                if (strcmp(buffer, CLOG_LOOP_END) == 0) {
+                    break;
+                } else { /* else update the loop string */
+                    loop_str = (char *)realloc(loop_str, sizeof(char) * (strlen(loop_str) + strlen(buffer) + 1));
+                    strcat(loop_str, buffer);
+                }
+            }
+
+            /* loop through the hash table array to print out the data */
+            for (i = 0; i < count; i++) {
+                pt = loop_str;
+                while(*pt) {
+                    if (strncmp(pt, CLOG_SCRIPT_OPEN, strlen(CLOG_SCRIPT_OPEN)) == 0) {
+                        open = pt + strlen(CLOG_SCRIPT_OPEN);
+                        close = strstr(open, CLOG_SCRIPT_CLOSE);
+                        pt = close + strlen(CLOG_SCRIPT_CLOSE);
+                        key_size = close - open;
+                        key = (char *)malloc(sizeof(char) * (key_size + 1));
+                        strncpy(key, open, key_size);
+                        key[key_size] = 0;
+                        hash_print(h[i], key);
+                    }
+                    printf("%c", *pt);
+                    pt++;
+                }
+            }
+            continue; /* keep the CLOG_LOOP_END from priting */
+        }
+        printf("%s", buffer);
+    }
+
+    return 0;
+}
+
+
+
 int remove_entry(int id) {
     char *q;
     int rs;
@@ -107,14 +170,10 @@ int generate_entries(int window, int id, const char *template_file) {
     char *zErrMsg = 0;
     char *q;
     char **results = 0;
-    int c; // number of columns returned from query
+    int col, c; // number of columns returned from query
     int row, r; // r: number of rows returned from query
-    FILE *fc;
-    char buffer[FILE_BUFFER_SIZE];
-    char *loop_str;
-    int ts; /* keep track of which part of the template file we are in */
-    char e_str[1];
-    e_str[0] = 0;
+    int i; //generic counter (DO NOT USE IT FOR STORAGE)
+    void *pfptr;
 
     q = (char *)malloc(sizeof(char) * 250);
 
@@ -143,7 +202,7 @@ int generate_entries(int window, int id, const char *template_file) {
         return rc;
     }
 
-    hast_table entries[r];
+    hash_table entries[r];
 
     int index;
     for (row = 1; row <= r; row++) {
@@ -151,84 +210,31 @@ int generate_entries(int window, int id, const char *template_file) {
 
         hash_table_init(entries[index]);
         for (col = 0; col < c; col++) {
-            hash_add(entries[index], results[col], results[row * c + col], NULL);
-        }
-/* 
-
-        entries[index].id = strtol(results[CLOG_ID], NULL, 10);
-        entries[index].title   = results[CLOG_TITLE];
-        entries[index].content = results[CLOG_CONTENT];
-
-        entries[index].c_time = (char *)malloc(sizeof(char) * 32);
-        entries[index].u_time = (char *)malloc(sizeof(char) * 32);
-        entries[index].comment_count = strtol(results[CLOG_COMMENT_COUNT], NULL, 10);
-
-        if (results[CLOG_C_TIME] == NULL) {
-            free(entries[index].c_time);
-            entries[index].c_time = NULL;
-        } else {
-            rfc_date(entries[index].c_time, strtol(results[CLOG_C_TIME], NULL, 10));
-        }
-
-        if (results[CLOG_U_TIME] == NULL) {
-            free(entries[index].u_time);
-            entries[index].u_time = NULL;
-        } else {
-            rfc_date(entries[index].u_time, strtol(results[CLOG_U_TIME], NULL, 10));
-        }
-*/
-    }
-
-    print_template(template_file, entries);
-
-
-/*
-    fc = fopen(template_file, "r");
-    if (fc == NULL) {
-        error_log("Failed opening template file: %s\n", template_file);
-        return errno;
-    }
-
-    ts = CLOG_BEFORE_LOOP;
-    loop_str = (char *)malloc(sizeof(char));
-    *(loop_str) = 0;
-
-    while (fgets(buffer, sizeof(buffer), fc)) {
-        if (strcmp(buffer, CLOG_LOOP_BEGIN) == 0) {
-            ts = CLOG_INSIDE_LOOP;
-            continue;
-        }
-
-        if (strcmp(buffer, CLOG_LOOP_END) == 0) {
-            // now that we ended the loop parse the loop_str for each entries 
-            //printf("%s", loop_str);
-            for (row = 0; row < r; row++) {
-                output_entry(loop_str, entries[row]);
+            pfptr = NULL;
+            if (strcmp(results[col], "content") == 0) {
+                pfptr = htmlize_print;
+            } else
+            if (strcmp(results[col], "comment_count") == 0) {
+                pfptr = print_comment_count;
             }
-            ts = CLOG_AFTER_LOOP;
-            continue;
-        }
-
-        switch (ts) {
-            case CLOG_INSIDE_LOOP:
-                loop_str = (char *)realloc(loop_str, sizeof(char) * (strlen(loop_str) + strlen(buffer) + 1));
-                strcat(loop_str, buffer);
-                break;
-            default:
-                printf("%s", buffer);
-                break;
+            hash_add(entries[index], results[col], results[row * c + col], pfptr);
         }
     }
 
-    free(loop_str);
-
-    free_entries(entries, r);
-*/
+    print_template(template_file, entries, r);
 
     sqlite3_free_table(results);
-
     sqlite3_close(db);
+    for (i = 0; i < r; i++) {
+        hash_free(entries[r]);
+    }
     return 0;
+}
+
+void print_comment_count(char *count) {
+    if(strcmp(count, "0") != 0) {
+        printf(" (%s)", count);
+    }
 }
 
 int free_entries(entry_t entries[], int count) {
@@ -240,37 +246,6 @@ int free_entries(entry_t entries[], int count) {
 	return 0;
 }
 
-void output_entry(char *tmplate, const entry_t e) {
-    char *pt;
-    char tag[20];
-    int i;
-
-    pt = tmplate;
-
-    while(*pt) {
-        if ((*pt) == '{' && (*(pt+1)) == '=') {
-            pt = pt + 2;
-            i = 0;
-            while((*pt) != '=' && (*(pt+1)) != '}' && i < 20) {
-                tag[i] = *pt;
-                pt++;
-                i++;
-            }
-            tag[i] = 0;
-            pt++;
-
-            if (strcmp(tag, "id") == 0) printf("%d", e.id);
-            if (strcmp(tag, "title") == 0 && e.title != NULL) printf("%s", e.title);
-            if (strcmp(tag, "content") == 0 && e.content != NULL) htmlize_print(e.content);
-            if (strcmp(tag, "c_time") == 0 && e.c_time != NULL) printf("%s", e.c_time);
-            if (strcmp(tag, "u_time") == 0 && e.u_time != NULL) printf("%s", e.u_time);
-            if (strcmp(tag, "comment_count") == 0 && e.comment_count) printf(" (%d)", e.comment_count);
-        } else {
-            printf("%c", *pt);
-        }
-        pt++;
-    }
-}
 
 int generate_comments(int entry_id, const char *template_file) {
     sqlite3 *db;
@@ -279,10 +254,7 @@ int generate_comments(int entry_id, const char *template_file) {
     int rc;
     char *q;
     char **results = 0;
-    int r, c, row;
-    int ts;
-    FILE *fc;
-    char buffer[FILE_BUFFER_SIZE];
+    int r, c; //, col, row;
 
     q = (char *)malloc(sizeof(char) * 250);
 
@@ -303,6 +275,7 @@ int generate_comments(int entry_id, const char *template_file) {
         return rc;
     }
 
+    /*
     char *comments[r];
     char *c_times[r];
     for (row = 1; row <= r; row++) {
@@ -323,45 +296,12 @@ int generate_comments(int entry_id, const char *template_file) {
         error_log("Failed opening template file: %s\n", template_file);
         return errno;
     }
-
-    /*
-    ts = CLOG_BEFORE_LOOP;
-    loop_str = (char *)malloc(sizeof(char));
-    *(loop_str) = 0;
-
-    while (fgets(buffer, sizeof(buffer), fc)) {
-        if (strcmp(buffer, CLOG_LOOP_BEGIN) == 0) {
-            ts = CLOG_INSIDE_LOOP;
-            continue;
-        }
-
-        if (strcmp(buffer, CLOG_LOOP_END) == 0) {
-            // now that we ended the loop parse the loop_str for each entries 
-            //printf("%s", loop_str);
-            for (row = 0; row < r; row++) {
-
-            }
-            ts = CLOG_AFTER_LOOP;
-            continue;
-        }
-
-        switch (ts) {
-            case CLOG_INSIDE_LOOP:
-                loop_str = (char *)realloc(loop_str, sizeof(char) * (strlen(loop_str) + strlen(buffer) + 1));
-                strcat(loop_str, buffer);
-                break;
-            default:
-                printf("%s", buffer);
-                break;
-        }
-    }
-    */
-
     
     for(row = 0; row < r; row++) {
         free(comments[row]);
         free(c_times[row]);
     }
+    */
     sqlite3_free_table(results);
     sqlite3_close(db);
     return 0;
@@ -402,9 +342,9 @@ void htmlize_print(char *str) {
 }
 
 
-void print_template(char *filename, hash_table tables[], int rows) {
+void print_hash_tables(char *filename, hash_table tables[], int rows) {
     int i;
-    for (int i = 0; i < rows; i++) {
+    for (i = 0; i < rows; i++) {
         hash_print_all(tables[i]);
     }
 }

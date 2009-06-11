@@ -38,25 +38,36 @@
         <div id="header">
             <h1>Blog of Timothy Kim</h1>
         </div>
+        <div id="menu">
+            <ul>
+                <li class="selected">Blog</li>
+                <li>Me</li>
+                <li>Projects</li>
+            </ul>
+        </div>
         <div id="body">
 
 {=loop_begin=}
+        <div class="entry_wrapper">
             <div class="entry" id="entry_{=id=}">
                 <h2 class="title"><a href="{=id=}">{=title=}</a></h2>
-                <div class="c_time">{=c_time=}</div>
+                <div class="meta pre_content">
+                    <div class="c_time">{=c_time=}</div>
+                    <div class="u_time">{=u_time=}</div>
+                </div>
                 <div class="content">
                     {=content=}
                 </div>
-                <div class="u_time">{=u_time=}</div>
-                <div class="meta">
+                <div class="meta post_content">
                     <div class="tags">
-                        Tags: <a href="#">+</a>
+                        <a href="#">+</a>
                     </div>
                     <div class="comments">
-                        <a name="comments" href="{=id=}#comments"><big>&#10000;</big> Comments{=comment_count=}</a>
+                        <a name="comments" onclick="return false;" href="{=id=}#comments"><big>&#10000;</big> Comments{=comment_count=}</a>
                     </div>
                 </div>
             </div>
+        </div>
 {=loop_end=}
 
         </div>
@@ -75,10 +86,12 @@
             </div>
 
             <div class="sb_item">
-                <h2>Projects</h2>
+                <h2>Tools and Projects</h2>
                 <ul id="projects">
                     <li><a href="http://dickensurl.com">DickensURL.com</a></li>
                     <li><a href="http://timothylive.net/pangram_maker.html">팬그램 메이커</a></li>
+                    <li><a href="http://gist.github.com/113331">청기백기 명령문 Generator</a></li>
+                    <li><a href="http://kgfamily.com/manil.php">만일 계산기</a></li>
                 </ul>
             </div>
 
@@ -112,7 +125,7 @@
             This blog is powered by <a href="http://github.com/highwind/clog/tree/master">clog</a>, a blog engine written in C. Yes, C.
         </div>
         <div id="footnote">
-            This blog does NOT conform to any of the w3c standards nor does it tries to. As long as it is accessible from any browser, links to IE6 to latest webkit build, I am happy. Yes, I am getting old.
+            This blog does NOT conform to any of the w3c standards nor does it tries to (<a href="http://validator.w3.org/check?uri=http%3A%2F%2Ftimothylive.net%2Fclog">it might be though</a>). As long as it is accessible from any browser, links2 to IE6 to latest webkit build, I am happy. Yes, I am getting old.
         </div>
     </div>
 <script type="text/javascript">

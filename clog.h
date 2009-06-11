@@ -3,6 +3,7 @@
 
 #include <sqlite3.h>
 #include <errno.h>
+#include "hash.h"
 
 #define DATABASE "clog.db"
 
@@ -27,7 +28,6 @@
 #define CLOG_INSIDE_LOOP 1
 #define CLOG_AFTER_LOOP 2
 
-
 #define FILE_BUFFER_SIZE 100
 
 #ifndef HAVE_ERRNO_DEF
@@ -44,10 +44,11 @@ typedef struct entry {
     int comment_count;
 } entry_t;
 
-int free_entries(entry_t entries[], int count);
 
 /* sqlite3 query function wrapper */
 int db_modify_table(const char *);
+
+int print_template(const char *, hash_table[], int);
 
 /* add_entry(title, content) */
 int add_entry(const char *, const char *);
@@ -59,6 +60,7 @@ int update_entry(int, const char *, const char *);
  *  generate_entries(# of entries, starting entry, template file)
  */
 int generate_entries(int, int, const char *);
+int free_entries(entry_t entries[], int count);
 
 /* generate_comments(entry, template file) */
 int generate_comments(int, const char *);
@@ -66,12 +68,11 @@ int generate_comments(int, const char *);
 /* remove_entry(id) */
 int remove_entry(int);
 
-void output_entry(char *, const entry_t);
-
 /*
  * prints str where two or more \n are converted to <p> 
  */
 void htmlize_print(char *str);
+void print_comment_count(char *count);
 
 int error_log(const char *fmt, ...);
 
