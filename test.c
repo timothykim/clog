@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include <string.h>
 #include "hash.h"
 
 
@@ -10,7 +11,7 @@ void test_hash();
 void assert_hash_table(hash_table h);
 
 int main() {
-
+    test_hash();
     return 0;
 }
 
@@ -40,15 +41,15 @@ void test_hash() {
 
     printf("> Testing hash_add...\n");
     hash_add(h, "name", "Tim", emph);
-    assert(h[hasher("name")]->key == "name");
-    assert(h[hasher("name")]->val == "Tim");
+    assert(strcmp(h[hasher("name")]->key, "name") == 0);
+    assert(strcmp(h[hasher("name")]->val, "Tim") == 0);
     assert(h[hasher("name")]->next == NULL);
     assert(h[hasher("name")]->print_f == &emph);
 
     hash_add(h, "a", "123", NULL);
     assert(h[hasher("name")]->next != NULL);
-    assert(h[hasher("name")]->next->key == "a");
-    assert(h[hasher("name")]->next->val == "123");
+    assert(strcmp(h[hasher("name")]->next->key , "a") == 0);
+    assert(strcmp(h[hasher("name")]->next->val , "123") == 0);
     assert(h[hasher("name")]->next->next == NULL);
     assert(h[hasher("name")]->next->print_f == NULL);
     printf(">>> hash_add passed!\n");
@@ -75,14 +76,13 @@ void assert_hash_table(hash_table h) {
             assert(h[i] == NULL);
         }
     }
-    assert(h[hasher("name")]->key == "name");
-    assert(h[hasher("name")]->val == "Tim");
+    assert(strcmp(h[hasher("name")]->key , "name") == 0);
+    assert(strcmp(h[hasher("name")]->val , "Tim") == 0);
     assert(h[hasher("name")]->print_f == &emph);
     assert(h[hasher("name")]->next != NULL);
-    assert(h[hasher("name")]->next->key == "a");
-    assert(h[hasher("name")]->next->val == "123");
+    assert(strcmp(h[hasher("name")]->next->key , "a") == 0);
+    assert(strcmp(h[hasher("name")]->next->val , "123") == 0);
     assert(h[hasher("name")]->next->print_f == NULL);
     assert(h[hasher("name")]->next->next == NULL);
 }
-
 

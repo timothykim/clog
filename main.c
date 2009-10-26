@@ -46,7 +46,7 @@ int main() {
         }
 
         if (strcmp(comments, "true") == 0) {
-            strcat(type, "_comment.ct");
+            strcat(type, "_comments.ct");
             generate_comments(strtol(entry, NULL, 10), type);
         } else {
             /* defaults to creating the main blog */
