@@ -62,8 +62,17 @@
                     <div class="tags">
                         <a href="#">+</a>
                     </div>
-                    <div class="comments">
-                        <a name="comments" onclick="return false;" href="{=id=}#comments"><big>&#10000;</big> Comments{=comment_count=}</a>
+                    <a name="comments" onclick="$(this).next('div.comment_block').slideToggle(); return false;" href="{=id=}#comments"><big>&#10000;</big> Comments{=comment_count=}</a>
+                    <div class="comment_block" style="display: none;">
+                        <div class="comments loading">
+                            <img src="/spinner.gif" border="0" /> Loading Comments...
+                        </div>
+
+                        <form action="/clog/post/comments" method="post">
+                            <input type="hidden" name="entry_id" value="{=id=}" />
+                            <textarea class="comment"></textarea>
+                            <button type="submit">Post comment</button>
+                        </form>
                     </div>
                 </div>
             </div>

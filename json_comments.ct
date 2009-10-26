@@ -3,8 +3,8 @@
 {=loop_begin=}
         {
             "id": {=id=},
-            "created": "{=c_time=}"
-            "entry_id": "{=entry_id=}"
+            "created": "{=c_time=}",
+            "entry_id": "{=entry_id=}",
             "comment": "{=comment=}"
         },
 {=loop_end=}
