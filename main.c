@@ -40,6 +40,10 @@ int main() {
         if (strcmp(type, "rss") == 0) {
             printf("Content-type: application/rss+xml; charset=UTF-8\r\n"
                     "\r\n");
+        } else 
+        if (strcmp(type, "atom") == 0) {
+            printf("Content-type: application/atom+xml; charset=UTF-8\r\n"
+                    "\r\n");
         } else {
             printf("Status: 400 Bad Request\r\n\r\n");
             break;

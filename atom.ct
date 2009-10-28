@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding='utf-8'?>
+
+<feed xmlns="http://www.w3.org/2005/Atom" 
+    xml:base="http://timothylive.net/clog/entries.atom">
+    <id>http://timothylive.net/clog/entries.atom</id>
+    <title>TimothyLive.net Blog</title>
+    <link rel="self" href="/clog/entries.atom" />
+    <link href="http://timothylive.net/clog" />
+    <author>
+        <name>Timothy Kim</name>
+        <email>timothkim@timothylive.net</email>
+    </author>
+{=loop_begin=}
+    <entry>
+        <id>{=id=}</id>
+        <title>{=title=}</title>
+        <link href="http://timothyilve.net/clog/{=id=}.atom" />
+        <link rel="alternate" href="http://timothylive.net/clog/{=id=}" />
+        <link rel="edit" href="http://timothylive.net/clog/edit/{=id=}.atom" />
+        <updated>{=c_time=}</updated>
+    </entry>
+{=loop_end=}
+</feed>
