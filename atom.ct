@@ -18,6 +18,7 @@
         <link rel="alternate" href="http://timothylive.net/clog/{=id=}" />
         <link rel="edit" href="http://timothylive.net/clog/edit/{=id=}.atom" />
         <updated>{=c_time=}</updated>
+		<content type="html"><![CDATA[{=content=}]]></content>
     </entry>
 {=loop_end=}
 </feed>

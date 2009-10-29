@@ -224,10 +224,10 @@ int generate_entries(int window, int id, const char *template_file) {
                 pfptr = print_comment_count;
             } else
             if (strcmp(results[col], "c_time") == 0) {
-                pfptr = print_rfc_date;
+                pfptr = print_date;
             } else
             if (strcmp(results[col], "u_time") == 0) {
-                pfptr = print_rfc_date;
+                pfptr = print_date;
             }
             hash_add(entries[index], results[col], results[row * c + col], pfptr);
         }
@@ -236,6 +236,7 @@ int generate_entries(int window, int id, const char *template_file) {
     print_template(template_file, entries, r);
 
     /*
+	 * TODO: fix this :(
     for (i = 0; i < r; i++) {
         hash_free(entries[r]);
     }
@@ -303,7 +304,7 @@ int generate_comments(int entry_id, const char *template_file) {
                 pfptr = print_comment_count;
             } else
             if (strcmp(results[col], "c_time") == 0) {
-                pfptr = print_rfc_date;
+                pfptr = print_date;
             }
             hash_add(comments[index], results[col], results[row * c + col], pfptr);
         }
@@ -369,17 +370,18 @@ int error_log(const char *fmt, ...) {
     return (ret);
 }
 
-void print_rfc_date(char *time) {
+void print_date(char *time) {
     if (time != NULL) {
         char date[50];
-        rfc_date(date, strtol(time, NULL, 10));
+		//const char *format = "%a, %d %b %Y %H:%M:%S %z";
+		const char *format = "%Y-%m-%dT%H:%M:%SZ";
+        format_date(date, strtol(time, NULL, 10), format);
         printf("%s", date);
     }
 }
 
-void rfc_date(char *d_str, time_t time) {
+void format_date(char *d_str, time_t time, const char *format) {
     struct tm *date;
-    const char *format = "%a, %d %b %Y %H:%M:%S %z";
 
     date = localtime((const time_t *)&time);
     (void)strftime(d_str, 32, format, date);
