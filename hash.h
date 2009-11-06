@@ -22,13 +22,13 @@
 #define BUCKET_SIZE 10
 
 //if you need to parse the value before printing
-typedef void printer(char *);
+typedef void printer(char *, const char *);
 
 typedef struct hash {
     char *key;
     char *val;
     printer *print_f;
-    struct hash *next; //for collision...
+    struct hash *next; //for collision
 } hash_t;
 
 typedef hash_t *hash_table[BUCKET_SIZE];
@@ -48,7 +48,7 @@ void hash_free(hash_table h);
  *  you can just use sqlite3_free_table */
 void hash_add(hash_table h, char *key, char *val, printer *f);
 
-void hash_print(hash_table table, char *key);
+void hash_print(hash_table table, char *key, const char *param);
 
 void hash_print_all(hash_table table);
 

@@ -57,7 +57,7 @@ void hash_add(hash_table h, char *key, char *val, printer *f) {
 }
 
 
-void hash_print(hash_table table, char *key) {
+void hash_print(hash_table table, char *key, const char *param) {
     hash_t *h = hash_find(table, key);
     if (h == NULL) {
         return;
@@ -66,7 +66,7 @@ void hash_print(hash_table table, char *key) {
             printf("%s", h->val);
         }
     } else {
-        h->print_f(h->val);
+        h->print_f(h->val, param);
     }
 }
 
@@ -79,7 +79,7 @@ void hash_print_all(hash_table table) {
         while (curr != NULL) {
             printf(" %s\t\t| %s\t\t| ", curr->key, curr->val);
             if (curr->print_f != NULL) {
-                curr->print_f(curr->val);
+                curr->print_f(curr->val, NULL);
             }
             printf("\n");
             curr = curr->next;

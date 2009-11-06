@@ -14,10 +14,9 @@
     <entry>
         <id>{=id=}</id>
         <title>{=title=}</title>
-        <link href="http://timothyilve.net/clog/{=id=}.atom" />
-        <link rel="alternate" href="http://timothylive.net/clog/{=id=}" />
+        <link href="http://timothylive.net/clog/{=id=}" />
         <link rel="edit" href="http://timothylive.net/clog/edit/{=id=}.atom" />
-        <updated>{=c_time=}</updated>
+        <updated>{=c_time %Y-%m-%dT%H:%M:%SZ=}</updated>
 		<content type="html"><![CDATA[{=content=}]]></content>
     </entry>
 {=loop_end=}

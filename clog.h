@@ -71,9 +71,9 @@ int remove_entry(int);
 /*
  * prints str where two or more \n are converted to <p> 
  */
-void htmlize_print(char *str);
-void print_comment_count(char *count);
-void print_date(char *time);
+void htmlize_print(char *str, const char *format);
+void print_comment_count(char *count, const char *format);
+void print_date(char *time, const char *format);
 
 int error_log(const char *fmt, ...);
 

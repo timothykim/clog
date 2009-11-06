@@ -8,11 +8,17 @@ void get_param(char *q_str, char *search, char *ret, size_t n);
 
 int main() {
     while (FCGI_Accept() >= 0) {
-        char type[80] = "html";
+        char type[80] = "atom";
         char entry[10] = "0";
         char comments[6] = "false";
+        char *postdata;
 
-        if(getenv("QUERY_STRING") != NULL) {
+        postdata = getenv("CONTENT_LENGTH");
+        if (postdata != NULL) {
+        }
+        
+
+        if (getenv("QUERY_STRING") != NULL) {
             char gets[1000];
 
             strcpy(gets, getenv("QUERY_STRING"));
