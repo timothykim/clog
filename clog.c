@@ -95,6 +95,7 @@ int print_template(const char *template_file, hash_table h[], int count) {
     char *open;
     char *close;
     char *loop_str;
+    char *param;
     loop_str = (char *)malloc(sizeof(char) * 1);
     loop_str[0] = 0;
 
@@ -131,7 +132,18 @@ int print_template(const char *template_file, hash_table h[], int count) {
                         key = (char *)malloc(sizeof(char) * (key_size + 1));
                         strncpy(key, open, key_size);
                         key[key_size] = 0;
-                        hash_print(h[i], key);
+                        //if key contains a space that means we have a parameter!
+                        param = key;
+                        while (*param) {
+                            param++;
+                            if (*param == ' ') {
+                                *param = 0;
+                                param++;
+                                break;
+                            }
+                        }
+
+                        hash_print(h[i], key, param);
                         free(key);
                     }
                     printf("%c", *pt);
@@ -246,11 +258,6 @@ int generate_entries(int window, int id, const char *template_file) {
     return 0;
 }
 
-void print_comment_count(char *count) {
-    if(strcmp(count, "0") != 0) {
-        printf(" (%s)", count);
-    }
-}
 
 int free_entries(entry_t entries[], int count) {
     int i;
@@ -318,7 +325,7 @@ int generate_comments(int entry_id, const char *template_file) {
     return 0;
 }
 
-void htmlize_print(char *str) {
+void htmlize_print(char *str, const char *param) {
     char *sep = "\n\r";
     char *paragraph;
 
@@ -370,12 +377,22 @@ int error_log(const char *fmt, ...) {
     return (ret);
 }
 
-void print_date(char *time) {
+void print_comment_count(char *count, const char *param) {
+    if(strcmp(count, "0") != 0) {
+        printf(" (%s)", count);
+    }
+}
+
+void print_date(char *time, const char *format) {
     if (time != NULL) {
         char date[50];
 		//const char *format = "%a, %d %b %Y %H:%M:%S %z";
-		const char *format = "%Y-%m-%dT%H:%M:%SZ";
-        format_date(date, strtol(time, NULL, 10), format);
+		//const char *format = "%Y-%m-%dT%H:%M:%SZ";
+        if (strlen(format) == 0) {
+            format_date(date, strtol(time, NULL, 10), "%a, %d %b %Y %H:%M:%S %z");
+        } else {
+            format_date(date, strtol(time, NULL, 10), format);
+        }
         printf("%s", date);
     }
 }
