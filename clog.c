@@ -96,6 +96,8 @@ int print_template(const char *template_file, hash_table h[], int count) {
     char *close;
     char *loop_str;
     char *param;
+    char *file_name;
+    FILE *file_ptr;
     loop_str = (char *)malloc(sizeof(char) * 1);
     loop_str[0] = 0;
 
@@ -107,6 +109,22 @@ int print_template(const char *template_file, hash_table h[], int count) {
 
     /* read in the template and just output the buffer */
     while (fgets(buffer, sizeof(buffer), fc)) {
+        /* file include */
+        if (strncmp(buffer, CLOG_FILE_INCLUDE, 7) == 0) {
+            buffer[strlen(buffer)-3] = 0;
+            file_name = buffer+strlen(CLOG_FILE_INCLUDE);
+            file_ptr = fopen(file_name, "r");
+            if (file_ptr==NULL) {
+                printf("<!-- Error: can't open file. -->\n");
+            } else {
+                while (fgets(buffer, sizeof(buffer), file_ptr)) {
+                    printf("%s", buffer);
+                }
+                fclose(file_ptr);
+            }
+            continue;
+        }
+
         /* if we hit the loop parse and output */
         if (strcmp(buffer, CLOG_LOOP_BEGIN) == 0) {
             /* build up the loop template */
@@ -143,7 +161,11 @@ int print_template(const char *template_file, hash_table h[], int count) {
                             }
                         }
 
-                        hash_print(h[i], key, param);
+                        if (strcmp(key, "i") == 0) {
+                            printf("%d",i);
+                        } else {
+                            hash_print(h[i], key, param);
+                        }
                         free(key);
                     }
                     printf("%c", *pt);

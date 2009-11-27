@@ -8,7 +8,7 @@ void get_param(char *q_str, char *search, char *ret, size_t n);
 
 int main() {
     while (FCGI_Accept() >= 0) {
-        char type[80] = "atom";
+        char type[80] = "html";
         char entry[10] = "0";
         char comments[6] = "false";
         char *postdata;
