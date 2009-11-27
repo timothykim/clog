@@ -74,9 +74,8 @@ int remove_entry(int);
 void htmlize_print(char *str, const char *format);
 void print_comment_count(char *count, const char *format);
 void print_date(char *time, const char *format);
-
-int error_log(const char *fmt, ...);
-
 void format_date(char *d_str, time_t time, const char *format);
+
+int error_log(const char *, ...);
 
 #endif

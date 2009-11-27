@@ -3,12 +3,14 @@
 #include <assert.h>
 #include <string.h>
 #include "hash.h"
+#include "atom.h"
 
 
 
 void emph(char *text);
 void test_hash();
 void assert_hash_table(hash_table h);
+void atom_test();
 
 int main() {
     test_hash();
@@ -17,6 +19,10 @@ int main() {
 
 void emph(char *text) {
     printf("%s!", text);
+}
+
+void atom_test() {
+	
 }
 
 void test_hash() {
