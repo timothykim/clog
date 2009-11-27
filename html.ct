@@ -14,10 +14,13 @@
     <script type="text/javascript" src="/scripts/jquery-1.3.2.min.js"></script>
     <script type="text/javascript" src="/scripts/clog.js"></script>
     <script>
+        var clog = new Clog();
+
         $(document).ready(function () {
             $("li#mclog").addClass("selected");
             $("div.entry_wrapper:odd").addClass("odd");
             $("div.entry_wrapper:even").addClass("even");
+            $("div.comment_block").data("loaded", false);
         });
     </script>
 
@@ -53,7 +56,8 @@
                     {=content=}
                 </div>
                 <div class="meta post_content">
-                    <div class="comment_block" style="display: none;">
+                    <a onclick="return clog.displayComments({=id=});" name="comments" href="{=id=}#comments"><big>&#10000;</big> Comments{=comment_count=}</a>
+                    <div id="comment_block_{=id=}" class="comment_block" style="display: none;">
                         <div class="comments loading">
                             <img src="/spinner.gif" border="0" /> Loading Comments...
                         </div>
