@@ -24,6 +24,8 @@
 #define CLOG_LOOP_BEGIN "{=loop_begin=}\n"
 #define CLOG_LOOP_END "{=loop_end=}\n"
 
+#define CLOG_FILE_INCLUDE "{=file "
+
 #define CLOG_BEFORE_LOOP 0
 #define CLOG_INSIDE_LOOP 1
 #define CLOG_AFTER_LOOP 2
