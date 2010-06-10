@@ -6,7 +6,7 @@
 #include "clog.h"
 #include "atom.h"
 
-void get_param(char *q_str, char *search, char *ret, size_t n);
+void get_param(const char *q_str, char *search, char *ret, size_t n);
 
 int main() {
     while (FCGI_Accept() >= 0) {
@@ -22,7 +22,6 @@ int main() {
                 printf("Status: 400 Bad Request\r\n\r\n");
             }
 
-
             // parse the post function
             char gets[1000];
             char function[20];
@@ -35,6 +34,21 @@ int main() {
             fread(content, sizeof(char), len, stdin);
 
             if (strcmp(function, "comment") == 0) {
+                printf("Content-type: text/plain; charset=UTF-8\r\n"
+                        "\r\n");
+
+                char entry_id[10];
+                char comment[len];
+
+                get_param(content, "entry_id", entry_id, 10);
+                get_param(content, "content", comment, len);
+
+                add_comment(strtol(entry_id, NULL, 10), comment);
+
+                printf("done!\n%s\n%s\n%s", content, entry_id, comment);
+
+            } else {
+                printf("Status: 400 Bad Request\r\n\r\n");
             }
 
             free(content);
@@ -70,7 +84,7 @@ int main() {
             free(c);
             free(content);
             */
-        } // end if( type == "POST")
+        } else // end if( type == "POST")
 
         if (strcmp(req_method, "GET") == 0) {
 
@@ -129,13 +143,16 @@ int main() {
     return 0;
 }
 
-void get_param(char *q_str, char *search, char *ret, size_t n) {
+void get_param(const char *q_str, char *search, char *ret, size_t n) {
     char *sep = "&";
     char *sep2 = "=";
     char *query, *tokptr;
     char *key, *val, *tokptr2;
 
-    for(query = strtok_r(q_str, sep, &tokptr);
+    char *q_cpy = (char *)malloc(sizeof(char) * (strlen(q_str) + 1));
+    strcpy(q_cpy, q_str);
+
+    for(query = strtok_r(q_cpy, sep, &tokptr);
         query != NULL;
         query = strtok_r(NULL, sep, &tokptr)) {
 
@@ -151,6 +168,8 @@ void get_param(char *q_str, char *search, char *ret, size_t n) {
             return;
         }
     }
+
+    free(q_cpy);
 }
 
 /*
