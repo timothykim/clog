@@ -27,12 +27,46 @@ int main() {
             char function[20];
             strcpy(gets, getenv("QUERY_STRING"));
             get_param(gets, "function", function, 20);
+            get_param(gets, "format", type, 20);
 
             // grab the post data
             int len = strtol(getenv("CONTENT_LENGTH"), NULL, 10);
             char *content = (char *)malloc(sizeof(char) * len);
             fread(content, sizeof(char), len, stdin);
 
+            //atom post!
+            if (strcmp(type, "atom") == 0) {
+                LIBXML_TEST_VERSION
+
+                char *t;
+                char *c;
+                const int TS = 256;
+                int id;
+
+                t = (char *)malloc(sizeof(char) * TS);
+                c = (char *)malloc(sizeof(char) * len);
+
+                if (parse_post(content, t, TS, c, len) == 0) {
+                    id = add_entry(t, c);
+
+                    if (id > 0) {
+                        printf("Status: 201 Created\r\n\r\n");
+                        printf("Content-type: text/xml; charset=UTF-8\r\n"
+                            "\r\n");
+                    } else {
+                        printf("Status: 500 Internal Server Error\r\n\r\n");
+                    }
+                    generate_entries(1, id, "atom_single.ct");
+
+
+                } else {
+                    printf("Status: 400 Bad Request\r\n\r\n");
+                }
+
+                free(t);
+                free(c);
+                free(content);
+            } else 
             if (strcmp(function, "comment") == 0) {
                 printf("Content-type: text/plain; charset=UTF-8\r\n"
                         "\r\n");
@@ -46,7 +80,6 @@ int main() {
                 add_comment(strtol(entry_id, NULL, 10), comment);
 
                 printf("done!\n%s\n%s\n%s", content, entry_id, comment);
-
             } else {
                 printf("Status: 400 Bad Request\r\n\r\n");
             }
@@ -59,30 +92,6 @@ int main() {
             fread(content, sizeof(char), len, stdin);
 
 
-            LIBXML_TEST_VERSION
-
-            char *t;
-            char *c;
-            const int TS = 256;
-            int id;
-
-            t = (char *)malloc(sizeof(char) * TS);
-            c = (char *)malloc(sizeof(char) * len);
-
-            if (parse_post(content, t, TS, c, len) == 0) {
-                printf("Content-type: text/xml; charset=UTF-8\r\n"
-                    "\r\n");
-
-                printf("adding %s, %s\n", t, c);
-                id = add_entry(t, c);
-                printf("added id: %d\n", id);
-            } else {
-                printf("Status: 400 Bad Request\r\n\r\n");
-            }
-
-            free(t);
-            free(c);
-            free(content);
             */
         } else // end if( type == "POST")
 

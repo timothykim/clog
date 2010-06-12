@@ -16,19 +16,22 @@ int db_modify_table(const char *q) {
     rc = sqlite3_open(DATABASE, &db);
     if(rc) {
         /* error */
-        return rc;
+        return -rc;
     }
-
 
     rc = sqlite3_exec(db, q, NULL, 0, &zErrMsg);
     if (rc != SQLITE_OK) {
         error_log("In db_modify_table() SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
-        return rc;
+        return -rc;
+    }
+
+    if (strncmp(q, "INSERT", 6) == 0) {
+        rc = sqlite3_last_insert_rowid(db);
     }
 
     sqlite3_close(db);
-    return 0;
+    return rc;
 }
 
 int add_comment(int entry_id, const char *comment) {
@@ -54,25 +57,13 @@ int add_entry(const char *title, const char *content) {
     int rs;
 	sqlite3 *db;
 
-    /* TODO: make sure the q size is correct including time() */
-    q = (char *)malloc(sizeof(char) * (100 + strlen(title) + strlen(content)));
-
-    sprintf(q, "INSERT INTO entries (title, content, c_time) "
-               "VALUES ( \"%s\", \"%s\", %d);",
-               (title), (content), (int)time(NULL));
-
-	printf("%s\n\n", q);
+    q = sqlite3_mprintf("INSERT INTO entries (title, content, c_time) "
+                        "VALUES ( '%q', '%q', %d);",
+                        (title), (content), (int)time(NULL));
 
     rs = db_modify_table(q);
 
-    free(q);
-	if (rs) {
-		return -1;
-	}
-
-    sqlite3_open(DATABASE, &db);
-    rs = sqlite3_last_insert_rowid(db);
-    sqlite3_close(db);
+    sqlite3_free(q);
 
 	return rs;
 }

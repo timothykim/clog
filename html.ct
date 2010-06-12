@@ -62,9 +62,9 @@
                             <img src="/spinner.gif" border="0" /> Loading Comments...
                         </div>
 
-                        <form action="/clog/post/comments" method="post">
+                        <form action="/cgi-bin/clog.cgi?function=comment" method="post">
                             <input type="hidden" name="entry_id" value="{=id=}" />
-                            <textarea class="comment"></textarea>
+                            <textarea name="content" class="comment"></textarea>
                             <button type="submit">Post comment</button>
                         </form>
                     </div>
