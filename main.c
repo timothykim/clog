@@ -17,6 +17,12 @@ int main() {
 
         req_method = getenv("REQUEST_METHOD");
 
+        if (strcmp(req_method, "DELETE") == 0) {
+            if (getenv("QUERY_STRING") == NULL) {
+                printf("Status: 400 Bad Request\r\n\r\n");
+            }
+
+        } else
         if (strcmp(req_method, "POST") == 0) {
             if (getenv("QUERY_STRING") == NULL) {
                 printf("Status: 400 Bad Request\r\n\r\n");
@@ -152,6 +158,7 @@ int main() {
     return 0;
 }
 
+//this is really slow. :P
 void get_param(const char *q_str, char *search, char *ret, size_t n) {
     char *sep = "&";
     char *sep2 = "=";
