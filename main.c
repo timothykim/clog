@@ -54,7 +54,7 @@ int main() {
                         printf("Content-type: text/xml; charset=UTF-8\r\n"
                             "\r\n");
                     } else {
-                        printf("Status: 500 Internal Server Error\r\n\r\n");
+                        printf("Status: 500 Internal Server Error\r\n\r\nDB Error Code: %d", id);
                     }
                     generate_entries(1, id, "atom_single.ct");
 
