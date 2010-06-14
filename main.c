@@ -14,11 +14,24 @@ int main() {
         char entry[10] = "0";
         char comments[6] = "false";
         char *req_method;
+        char gets[1000];
 
         req_method = getenv("REQUEST_METHOD");
 
         if (strcmp(req_method, "DELETE") == 0) {
+            char id[10];
+
+            strcpy(gets, getenv("QUERY_STRING"));
+
             if (getenv("QUERY_STRING") == NULL) {
+                printf("Status: 400 Bad Request\r\n\r\n");
+            }
+
+            get_param(gets, "id", id, 10);
+
+            if (remove_entry(strtol(id, NULL, 10)) == 0) {
+                printf("Status: 204 No Content");
+            } else {
                 printf("Status: 400 Bad Request\r\n\r\n");
             }
 
@@ -29,7 +42,6 @@ int main() {
             }
 
             // parse the post function
-            char gets[1000];
             char function[20];
             strcpy(gets, getenv("QUERY_STRING"));
             get_param(gets, "function", function, 20);
