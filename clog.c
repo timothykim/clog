@@ -426,6 +426,6 @@ void print_date(char *time, const char *format) {
 void format_date(char *d_str, time_t time, const char *format) {
     struct tm *date;
 
-    date = localtime((const time_t *)&time);
+    date = gmtime((const time_t *)&time);
     (void)strftime(d_str, 32, format, date);
 }

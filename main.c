@@ -18,6 +18,56 @@ int main() {
 
         req_method = getenv("REQUEST_METHOD");
 
+        if (strcmp(req_method, "UPDATE") == 0) {
+            char id[10];
+
+            strcpy(gets, getenv("QUERY_STRING"));
+
+            if (getenv("QUERY_STRING") == NULL) {
+                printf("Status: 400 Bad Request\r\n\r\n");
+            } else {
+                get_param(gets, "id", id, 10);
+
+                int entry_id = strtol(id, NULL, 10);
+
+                // grab the post data
+                int len = strtol(getenv("CONTENT_LENGTH"), NULL, 10);
+                char *content = (char *)malloc(sizeof(char) * len);
+                fread(content, sizeof(char), len, stdin);
+
+                LIBXML_TEST_VERSION
+
+                char *t;
+                char *c;
+                const int TS = 256;
+                int id;
+
+                t = (char *)malloc(sizeof(char) * TS);
+                c = (char *)malloc(sizeof(char) * len);
+
+                if (parse_post(content, t, TS, c, len) == 0) {
+
+                    if (update_entry(entry_id, t, c) == 0) {
+                        printf("Status: 200 OK\r\n\r\n");
+                        printf("Content-type: text/xml; charset=UTF-8\r\n"
+                            "\r\n");
+
+                        generate_entries(1, entry_id, "atom_single.ct");
+
+                    } else {
+                        printf("Status: 500 Internal Server Error\r\n\r\nDB Error Code: %d", id);
+                    }
+
+                } else {
+                    printf("Status: 400 Bad Request\r\n\r\n");
+                }
+
+                free(t);
+                free(c);
+                free(content);
+
+            }
+        } else 
         if (strcmp(req_method, "DELETE") == 0) {
             char id[10];
 
@@ -25,14 +75,14 @@ int main() {
 
             if (getenv("QUERY_STRING") == NULL) {
                 printf("Status: 400 Bad Request\r\n\r\n");
-            }
-
-            get_param(gets, "id", id, 10);
-
-            if (remove_entry(strtol(id, NULL, 10)) == 0) {
-                printf("Status: 204 No Content");
             } else {
-                printf("Status: 400 Bad Request\r\n\r\n");
+                get_param(gets, "id", id, 10);
+
+                if (remove_entry(strtol(id, NULL, 10)) == 0) {
+                    printf("Status: 204 No Content\r\n\r\n");
+                } else {
+                    printf("Status: 400 Bad Request\r\n\r\n");
+                }
             }
 
         } else
@@ -71,12 +121,10 @@ int main() {
                         printf("Status: 201 Created\r\n\r\n");
                         printf("Content-type: text/xml; charset=UTF-8\r\n"
                             "\r\n");
+                        generate_entries(1, id, "atom_single.ct");
                     } else {
                         printf("Status: 500 Internal Server Error\r\n\r\nDB Error Code: %d", id);
                     }
-                    generate_entries(1, id, "atom_single.ct");
-
-
                 } else {
                     printf("Status: 400 Bad Request\r\n\r\n");
                 }
