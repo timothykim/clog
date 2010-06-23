@@ -143,9 +143,14 @@ int main() {
 
                 ac = add_comment(strtol(entry_id, NULL, 10), comment);
 
-                printf("Content-type: text/plain; charset=UTF-8\r\n"
-                        "\r\n");
-                printf("done!\n%s\n%s\n%s\n%d", content, entry_id, comment, ac);
+                printf("Content-type: application/json; charset=UTF-8\r\n");
+                if (ac > 0) {
+                    printf("\r\n");
+                    printf("{'success': true}");
+                } else {
+                    printf("Status: 500 Internal Server Error\r\n\r\n");
+                    printf("{'success': false, 'error_code': %d}", ac);
+                }
             } else {
                 printf("Status: 400 Bad Request\r\n\r\n");
             }
