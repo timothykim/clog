@@ -36,18 +36,19 @@ int db_modify_table(const char *q) {
 
 int add_comment(int entry_id, const char *comment) {
     char *q;
-    int rs;
+    int rs, u;
 
-    q = (char *)malloc(sizeof(char) * (100 + strlen(comment)));
-
-    sprintf(q, "INSERT INTO comments (entry_id, comment, c_time) "
-               "VALUES ( %d, \"%s\", %d); "
-               "UPDATE entries SET "
-               "comment_count=commnet_count+1 "
-               "WHERE id=%d;",
-               entry_id, comment, (int)time(NULL), entry_id);
+    q = sqlite3_mprintf("INSERT INTO comments (entry_id, comment, c_time) "
+                        "VALUES ( %d, '%q', %d); ",
+                        (entry_id), (comment), (int)time(NULL));
+                        /*
+                        "UPDATE entries SET "
+                        "comment_count=commnet_count+1 "
+                        "WHERE id=%d;",
+                        (entry_id), (comment), (int)time(NULL), entry_id);
+                        */
     rs = db_modify_table(q);
-    free(q);
+    sqlite3_free(q);
 
     return rs;
 }
@@ -225,8 +226,8 @@ int generate_entries(int window, int id, const char *template_file) {
             "c_time, "
             "u_time, "
             "comment_count "
-            "FROM entries "
-            "WHERE id %s %d AND deleted = 0 "
+            "FROM entries_with_comment_count "
+            "WHERE id %s %d "
             "ORDER BY c_time DESC "
             "LIMIT %d ",
             (window == 1) ? "=" : ">=",

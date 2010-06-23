@@ -48,7 +48,7 @@ int main() {
                 if (parse_post(content, t, TS, c, len) == 0) {
 
                     if (update_entry(entry_id, t, c) == 0) {
-                        printf("Status: 200 OK\r\n\r\n");
+                        printf("Status: 200 OK\r\n");
                         printf("Content-type: text/xml; charset=UTF-8\r\n"
                             "\r\n");
 
@@ -134,18 +134,18 @@ int main() {
                 free(content);
             } else 
             if (strcmp(function, "comment") == 0) {
-                printf("Content-type: text/plain; charset=UTF-8\r\n"
-                        "\r\n");
-
                 char entry_id[10];
                 char comment[len];
+                int ac;
 
                 get_param(content, "entry_id", entry_id, 10);
                 get_param(content, "content", comment, len);
 
-                add_comment(strtol(entry_id, NULL, 10), comment);
+                ac = add_comment(strtol(entry_id, NULL, 10), comment);
 
-                printf("done!\n%s\n%s\n%s", content, entry_id, comment);
+                printf("Content-type: text/plain; charset=UTF-8\r\n"
+                        "\r\n");
+                printf("done!\n%s\n%s\n%s\n%d", content, entry_id, comment, ac);
             } else {
                 printf("Status: 400 Bad Request\r\n\r\n");
             }
