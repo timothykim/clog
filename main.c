@@ -18,7 +18,7 @@ int main() {
 
         req_method = getenv("REQUEST_METHOD");
 
-        if (strcmp(req_method, "UPDATE") == 0) {
+        if (strcmp(req_method, "PUT") == 0) {
             char id[10];
 
             strcpy(gets, getenv("QUERY_STRING"));
@@ -40,14 +40,15 @@ int main() {
                 char *t;
                 char *c;
                 const int TS = 256;
-                int id;
+                int code;
 
                 t = (char *)malloc(sizeof(char) * TS);
                 c = (char *)malloc(sizeof(char) * len);
 
                 if (parse_post(content, t, TS, c, len) == 0) {
 
-                    if (update_entry(entry_id, t, c) == 0) {
+                    code = update_entry(entry_id, t, c);
+                    if (code == 0) {
                         printf("Status: 200 OK\r\n");
                         printf("Content-type: text/xml; charset=UTF-8\r\n"
                             "\r\n");
@@ -55,7 +56,7 @@ int main() {
                         generate_entries(1, entry_id, "atom_single.ct");
 
                     } else {
-                        printf("Status: 500 Internal Server Error\r\n\r\nDB Error Code: %d", id);
+                        printf("Status: 500 Internal Server Error\r\n\r\nDB Error Code: %d - %d \n\n", code, entry_id);
                     }
 
                 } else {
@@ -65,7 +66,6 @@ int main() {
                 free(t);
                 free(c);
                 free(content);
-
             }
         } else 
         if (strcmp(req_method, "DELETE") == 0) {
@@ -143,8 +143,10 @@ int main() {
 
                 ac = add_comment(strtol(entry_id, NULL, 10), comment);
 
-                printf("Content-type: application/json; charset=UTF-8\r\n");
+                fprintf(stderr, "Does it get here?");
+
                 if (ac > 0) {
+                    printf("Content-type: application/json; charset=UTF-8\r\n");
                     printf("\r\n");
                     printf("{'success': true}");
                 } else {

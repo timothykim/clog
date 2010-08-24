@@ -19,8 +19,15 @@ int db_modify_table(const char *q) {
         return -rc;
     }
 
+    FILE *f;
+    char date[50];
+    format_date(date, time(NULL), "");
+    f = fopen("query.log", "w");
+    fprintf(f, "\n%s - %s", date, q);
+
     rc = sqlite3_exec(db, q, NULL, 0, &zErrMsg);
     if (rc != SQLITE_OK) {
+        fprintf(f, "\n\nIn db_modify_table() SQL error: %s\n", zErrMsg);
         error_log("In db_modify_table() SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
         return -rc;
@@ -30,7 +37,11 @@ int db_modify_table(const char *q) {
         rc = sqlite3_last_insert_rowid(db);
     }
 
+
     sqlite3_close(db);
+
+    fclose(f);
+
     return rc;
 }
 
@@ -40,7 +51,7 @@ int add_comment(int entry_id, const char *comment) {
 
     q = sqlite3_mprintf("INSERT INTO comments (entry_id, comment, c_time) "
                         "VALUES ( %d, '%q', %d); ",
-                        (entry_id), (comment), (int)time(NULL));
+                        (entry_id), comment, (int)time(NULL));
                         /*
                         "UPDATE entries SET "
                         "comment_count=commnet_count+1 "
@@ -76,15 +87,16 @@ int update_entry(int id, const char *title, const char *content) {
     /* TODO: make sure the q size is correct including id */
     q = (char *)malloc(sizeof(char) * (70 + strlen(title) + strlen(content)));
 
-    sprintf(q, "UPDATE entries SET "
-               "title=\"%s\", "
-               "content=\"%s\" "
-               "u_time=%d"
+    q = sqlite3_mprintf("UPDATE entries SET "
+               "title='%q', "
+               "content='%q', "
+               "u_time=%d "
                "WHERE id=%d;",
                title, content, (int)time(NULL), id);
 
     rs = db_modify_table(q);
-    free(q);
+
+    sqlite3_free(q);
 
     return rs;
 }
@@ -335,7 +347,7 @@ int generate_comments(int entry_id, const char *template_file) {
         for (col = 0; col < c; col++) {
             pfptr = NULL;
             if (strcmp(results[col], "comment") == 0) {
-                pfptr = print_comment_count;
+                //pfptr = print_comment_count;
             } else
             if (strcmp(results[col], "c_time") == 0) {
                 pfptr = print_date;
@@ -363,6 +375,9 @@ void htmlize_print(char *str, const char *param) {
     if (strstr(paragraph, "<pre")) {
         do_not_format = 1;
     }
+
+    //don't do formatting... 
+    do_not_format = 1;
 
     while(paragraph != NULL) {
         if (do_not_format) {
@@ -398,9 +413,23 @@ void print_hash_tables(char *filename, hash_table tables[], int rows) {
 int error_log(const char *fmt, ...) {
     int ret;
     va_list ap;
+
+    /*
+    FILE *f;
+    char date[50];
+    format_date(date, time(NULL), "");
+
+    f = fopen("error.log", "a");
+    fprintf(f, "\n%s - ", date);
+
+    */
+
     va_start(ap, fmt);
     ret = fprintf(stderr, fmt, ap);
     va_end(ap);
+
+    //fclose(f);
+
     return (ret);
 }
 

@@ -78,6 +78,7 @@ void print_comment_count(char *count, const char *format);
 void print_date(char *time, const char *format);
 void format_date(char *d_str, time_t time, const char *format);
 
+void print_hash_tables(char *filename, hash_table tables[], int rows);
 int error_log(const char *, ...);
 
 #endif
